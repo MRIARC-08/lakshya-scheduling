@@ -61,6 +61,14 @@ def build_graph():
         max_retries=0,
     )
     
+    # Secondary LLM instance specifically for Triage to divide load
+    triage_llm = ChatGroq(
+        model_name=config.LLM_MODEL,
+        temperature=config.LLM_TEMPERATURE,
+        groq_api_key=config.GROQ_API_KEY_SECONDARY,
+        max_retries=0,
+    )
+    
     # Fallback LLM in case the primary hits rate limits
     fallback_llm = ChatGroq(
         model_name="llama-3.1-8b-instant", 
@@ -94,9 +102,9 @@ def build_graph():
     # Use the primary LLM with the hallucination validator to trigger fallbacks only when necessary
     llm_with_tools = primary_with_tools.with_fallbacks([fallback_with_tools, secondary_fallback_with_tools])
     
-    triage_llm = llm.with_fallbacks([fallback_llm, secondary_fallback_llm])
+    triage_llm_with_fallbacks = triage_llm.with_fallbacks([fallback_llm, secondary_fallback_llm])
 
-    triage_fn  = create_triage_agent(triage_llm)
+    triage_fn  = create_triage_agent(triage_llm_with_fallbacks)
     booking_fn = create_booking_specialist(llm_with_tools, tools)
 
     graph = StateGraph(SchedulingState)

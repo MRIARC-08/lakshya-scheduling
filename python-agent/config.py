@@ -7,6 +7,7 @@ load_dotenv()
 class Config:
     # LLM Settings
     GROQ_API_KEY: str = os.getenv("GROQ_API_KEY", "")
+    GROQ_API_KEY_SECONDARY: str = os.getenv("GROQ_API_KEY_SECONDARY", os.getenv("GROQ_API_KEY", ""))
     OPENAI_BASE_URL: Optional[str] = os.getenv("OPENAI_BASE_URL", None)
     LLM_MODEL: str = os.getenv("LLM_MODEL", "openai/gpt-oss-120b")
     LLM_TEMPERATURE: float = 0.01
