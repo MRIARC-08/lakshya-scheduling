@@ -10,14 +10,8 @@ export const corsair = createCorsair({
   kek: process.env.CORSAIR_KEK || 'd29yZHBhc3N3b3JkcGFzc3dvcmRwYXNzd29yZHBhc3M=',
   database: sql,
   plugins: [
-    gmail({
-      // open mode — automated business system
-      // no human approval needed for sending confirmations
-      defaultMode: 'open',
-    }),
-    googlecalendar({
-      defaultMode: 'open',
-    }),
+    gmail(),
+    googlecalendar(),
   ],
 })
 

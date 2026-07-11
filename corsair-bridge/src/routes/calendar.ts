@@ -64,7 +64,7 @@ router.post('/check', async (req: Request, res: Response) => {
     return res.status(400).json({
       success: false,
       error: 'Invalid input',
-      details: parsed.error.errors,
+      details: parsed.error.issues,
     })
   }
 
@@ -85,7 +85,7 @@ router.post('/check', async (req: Request, res: Response) => {
       })
 
     // Parse busy periods from response
-    const busyPeriods: Array<{ start: string; end: string }> =
+    const busyPeriods: Array<{ start?: string; end?: string }> =
       availability?.calendars?.[calendarId]?.busy ?? []
 
     log('INFO', `Busy periods for ${date}`, busyPeriods)
@@ -106,6 +106,7 @@ router.post('/check', async (req: Request, res: Response) => {
 
       // 2. Filter out slots that overlap with busy periods
       return !busyPeriods.some((busy) => {
+        if (!busy.start || !busy.end) return false
         const busyStart = new Date(busy.start)
         const busyEnd = new Date(busy.end)
         // Slot overlaps with busy period
@@ -143,7 +144,7 @@ router.post('/book', async (req: Request, res: Response) => {
     return res.status(400).json({
       success: false,
       error: 'Invalid input',
-      details: parsed.error.errors,
+      details: parsed.error.issues,
     })
   }
 
@@ -200,10 +201,6 @@ This session was booked via the Lakshya scheduling assistant (Arjun).
           ],
         },
         status: 'confirmed',
-        source: {
-          title: `Lakshya IAS — Booked by Arjun`,
-          url: 'https://lakshyaias.in',
-        },
         conferenceData: {
           createRequest: {
             requestId: bookingId, // unique string
@@ -212,7 +209,7 @@ This session was booked via the Lakshya scheduling assistant (Arjun).
             },
           },
         },
-      },
+      } as any,
     })
 
     log('INFO', 'Event created successfully', {

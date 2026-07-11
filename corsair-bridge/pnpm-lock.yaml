@@ -36,6 +36,9 @@ importers:
       '@corsair-dev/cli':
         specifier: ^0.1.19
         version: 0.1.19(postgres@3.4.9)
+      '@types/cors':
+        specifier: ^2.8.19
+        version: 2.8.19
       '@types/express':
         specifier: ^5.0.6
         version: 5.0.6
@@ -613,6 +616,9 @@ packages:
 
   '@types/connect@3.4.38':
     resolution: {integrity: sha512-K6uROf1LD88uDQqJCktA4yzL1YYAK6NgfsI0v/mTgyPKWsX1CnJ0XPSDhViejru1GcRkLWb8RlzFYJRqGUbaug==}
+
+  '@types/cors@2.8.19':
+    resolution: {integrity: sha512-mFNylyeyqN93lfe/9CSxOGREz8cpzAhH+E93xJ4xWQf62V8sQ/24reV2nyzUWM6H6Xji+GGHpkbLe7pVoUEskg==}
 
   '@types/express-serve-static-core@5.1.2':
     resolution: {integrity: sha512-d3KvEXBSo/lOAMc2u6fkyDHBvetBHeqD7wm/AcXfLpSOQwlmG9D/aQ0SFswVjv05p7ullQS7Mjohj6/VdbZuTg==}
@@ -2695,6 +2701,10 @@ snapshots:
       '@types/node': 26.1.1
 
   '@types/connect@3.4.38':
+    dependencies:
+      '@types/node': 26.1.1
+
+  '@types/cors@2.8.19':
     dependencies:
       '@types/node': 26.1.1
 

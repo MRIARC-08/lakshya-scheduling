@@ -35,7 +35,7 @@ router.post('/send', async (req: Request, res: Response) => {
     return res.status(400).json({
       success: false,
       error: 'Invalid input',
-      details: parsed.error.errors,
+      details: parsed.error.issues,
     })
   }
 
