@@ -194,7 +194,7 @@ def get_bookings_by_email_route(email: str):
 
 # ── Health check ──────────────────────────────────────────────
 
-@app.get("/health")
+@app.head("/health")
 async def health():
     return {
         "status":  "ok",

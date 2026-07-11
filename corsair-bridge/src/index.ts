@@ -42,7 +42,7 @@ app.use((req, res, next) => {
 
 // ── Routes ───────────────────────────────────────────────────
 
-app.get('/health', (_req, res) => {
+app.head('/health', (_req, res) => {
   res.json({
     status: 'ok',
     service: 'Lakshya IAS — Corsair Bridge',
