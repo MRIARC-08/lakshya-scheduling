@@ -77,10 +77,14 @@ def reserve_slot(
             ),
         })
 
-    if not is_valid_email(customer_email):
+    try:
+        from email_validator import validate_email, EmailNotValidError
+        valid_email_info = validate_email(customer_email, check_deliverability=True)
+        customer_email = valid_email_info.normalized
+    except EmailNotValidError as e:
         return json.dumps({
             "success": False,
-            "error": f"Invalid email: '{customer_email}'",
+            "error": f"Invalid email address '{customer_email}': {str(e)}",
         })
 
     # Validate session type
