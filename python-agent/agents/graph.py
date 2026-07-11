@@ -57,11 +57,33 @@ def build_graph():
         temperature=config.LLM_TEMPERATURE,
         groq_api_key=config.GROQ_API_KEY,
     )
+    
+    # Fallback LLM in case the primary hits rate limits
+    fallback_llm = ChatGroq(
+        model_name="llama-3.1-8b-instant", 
+        temperature=config.LLM_TEMPERATURE,
+        groq_api_key=config.GROQ_API_KEY,
+    )
+    
+    # Secondary Fallback LLM (Mixtral) in case Llama 3 models are completely exhausted
+    secondary_fallback_llm = ChatGroq(
+        model_name="mixtral-8x7b-32768", 
+        temperature=config.LLM_TEMPERATURE,
+        groq_api_key=config.GROQ_API_KEY,
+    )
 
     tools          = [check_availability, reserve_slot, send_confirmation_email]
-    llm_with_tools = llm.bind_tools(tools)
+    
+    # Bind tools to both and add fallback
+    primary_with_tools = llm.bind_tools(tools)
+    fallback_with_tools = fallback_llm.bind_tools(tools)
+    secondary_fallback_with_tools = secondary_fallback_llm.bind_tools(tools)
+    
+    llm_with_tools = primary_with_tools.with_fallbacks([fallback_with_tools, secondary_fallback_with_tools])
+    
+    triage_llm = llm.with_fallbacks([fallback_llm, secondary_fallback_llm])
 
-    triage_fn  = create_triage_agent(llm)
+    triage_fn  = create_triage_agent(triage_llm)
     booking_fn = create_booking_specialist(llm_with_tools, tools)
 
     graph = StateGraph(SchedulingState)

@@ -93,11 +93,18 @@ router.post('/check', async (req: Request, res: Response) => {
     // Generate all possible slots (business hours: 9am-6pm IST, 30-min intervals)
     const allSlots = generateBusinessSlots(date)
 
-    // Filter out busy slots
+    // Filter out busy slots and past slots
+    const now = new Date()
     const availableSlots = allSlots.filter((slot) => {
       const slotStart = new Date(`${date}T${slot}:00+05:30`)
       const slotEnd = new Date(slotStart.getTime() + 30 * 60 * 1000)
 
+      // 1. Filter out slots in the past
+      if (slotStart.getTime() <= now.getTime()) {
+        return false
+      }
+
+      // 2. Filter out slots that overlap with busy periods
       return !busyPeriods.some((busy) => {
         const busyStart = new Date(busy.start)
         const busyEnd = new Date(busy.end)

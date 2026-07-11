@@ -13,6 +13,14 @@ interface EmailOptions {
   textBody: string
 }
 
+function chunkBase64(str: string): string {
+  const chunks = []
+  for (let i = 0; i < str.length; i += 76) {
+    chunks.push(str.slice(i, i + 76))
+  }
+  return chunks.join('\r\n')
+}
+
 /**
  * Build RFC 2822 compliant MIME message string
  */
@@ -20,25 +28,33 @@ function buildMimeMessage(options: EmailOptions): string {
   const { from, fromName, to, subject, htmlBody, textBody } = options
 
   const boundary = `boundary_lakshya_${Date.now()}`
+  const domain = from.split('@')[1] || 'lakshyaias.in'
+  const messageId = `<${Date.now()}.${Math.random().toString(36).substring(2)}@${domain}>`
+  const dateStr = new Date().toUTCString()
+
+  const base64Text = chunkBase64(Buffer.from(textBody, 'utf-8').toString('base64'))
+  const base64Html = chunkBase64(Buffer.from(htmlBody, 'utf-8').toString('base64'))
 
   const mimeLines = [
     `From: ${fromName} <${from}>`,
     `To: ${to}`,
     `Subject: ${subject}`,
+    `Date: ${dateStr}`,
+    `Message-ID: ${messageId}`,
     `MIME-Version: 1.0`,
     `Content-Type: multipart/alternative; boundary="${boundary}"`,
     ``,
     `--${boundary}`,
     `Content-Type: text/plain; charset=utf-8`,
-    `Content-Transfer-Encoding: 7bit`,
+    `Content-Transfer-Encoding: base64`,
     ``,
-    textBody,
+    base64Text,
     ``,
     `--${boundary}`,
     `Content-Type: text/html; charset=utf-8`,
-    `Content-Transfer-Encoding: 7bit`,
+    `Content-Transfer-Encoding: base64`,
     ``,
-    htmlBody,
+    base64Html,
     ``,
     `--${boundary}--`,
   ]
@@ -85,136 +101,133 @@ export function buildConfirmationEmailHtml(params: {
 
   return `
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width">
   <title>Session Confirmed - Lakshya IAS Academy</title>
 </head>
 <body style="margin:0;padding:0;font-family:Arial,sans-serif;background-color:#f5f5f5;">
   
-  <!-- Header -->
-  <div style="background:linear-gradient(135deg,#FF6B00,#1A237E);padding:30px;text-align:center;">
-    <h1 style="color:white;margin:0;font-size:28px;letter-spacing:1px;">
-      🎯 Lakshya IAS Academy
-    </h1>
-    <p style="color:rgba(255,255,255,0.85);margin:8px 0 0 0;font-size:14px;">
-      Your Journey to Civil Services Starts Here
-    </p>
-  </div>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f5f5f5;padding:20px 0;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="560" cellpadding="0" cellspacing="0" border="0" style="background-color:#ffffff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.1);max-width:560px;">
+          
+          <tr>
+            <td style="background:linear-gradient(135deg,#FF6B00,#1A237E);padding:30px;text-align:center;">
+              <h1 style="color:white;margin:0;font-size:28px;letter-spacing:1px;">
+                Lakshya IAS Academy
+              </h1>
+              <p style="color:rgba(255,255,255,0.85);margin:8px 0 0 0;font-size:14px;">
+                Your Journey to Civil Services Starts Here
+              </p>
+            </td>
+          </tr>
 
-  <!-- Body -->
-  <div style="max-width:560px;margin:0 auto;background:white;border-radius:8px;
-              margin-top:20px;margin-bottom:20px;overflow:hidden;
-              box-shadow:0 2px 8px rgba(0,0,0,0.1);">
-    
-    <!-- Confirmation Banner -->
-    <div style="background:#4CAF50;padding:16px;text-align:center;">
-      <h2 style="color:white;margin:0;font-size:20px;">
-        ✅ Session Confirmed!
-      </h2>
-    </div>
+          <tr>
+            <td style="background-color:#4CAF50;padding:16px;text-align:center;">
+              <h2 style="color:white;margin:0;font-size:20px;">
+                Session Confirmed!
+              </h2>
+            </td>
+          </tr>
 
-    <!-- Content -->
-    <div style="padding:32px;">
-      <p style="font-size:16px;color:#333;margin-top:0;">
-        Dear <strong>${customerName}</strong>,
-      </p>
-      <p style="font-size:15px;color:#555;line-height:1.6;">
-        Your mentorship session at Lakshya IAS Academy has been 
-        successfully booked. We look forward to supporting your 
-        UPSC preparation journey!
-      </p>
+          <tr>
+            <td style="padding:32px;">
+              <p style="font-size:16px;color:#333;margin-top:0;">
+                Dear <strong>${customerName}</strong>,
+              </p>
+              <p style="font-size:15px;color:#555;line-height:1.6;">
+                Your mentorship session at Lakshya IAS Academy has been 
+                successfully booked. We look forward to supporting your 
+                UPSC preparation journey!
+              </p>
 
-      <!-- Booking Details Card -->
-      <div style="background:#FFF8F0;border-left:4px solid #FF6B00;
-                  border-radius:4px;padding:20px;margin:24px 0;">
-        <h3 style="color:#FF6B00;margin:0 0 16px 0;font-size:16px;">
-          📋 Booking Details
-        </h3>
-        <table style="width:100%;border-collapse:collapse;">
-          <tr>
-            <td style="padding:8px 0;color:#888;font-size:14px;width:40%;">
-              Session Type
-            </td>
-            <td style="padding:8px 0;color:#333;font-size:14px;font-weight:bold;">
-              ${sessionType}
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#FFF8F0;border-left:4px solid #FF6B00;border-radius:4px;margin:24px 0;">
+                <tr>
+                  <td style="padding:20px;">
+                    <h3 style="color:#FF6B00;margin:0 0 16px 0;font-size:16px;">
+                      Booking Details
+                    </h3>
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                      <tr>
+                        <td style="padding:8px 0;color:#888;font-size:14px;width:40%;">Session Type</td>
+                        <td style="padding:8px 0;color:#333;font-size:14px;font-weight:bold;">${sessionType}</td>
+                      </tr>
+                      <tr>
+                        <td style="padding:8px 0;color:#888;font-size:14px;">Date</td>
+                        <td style="padding:8px 0;color:#333;font-size:14px;font-weight:bold;">${date}</td>
+                      </tr>
+                      <tr>
+                        <td style="padding:8px 0;color:#888;font-size:14px;">Time</td>
+                        <td style="padding:8px 0;color:#333;font-size:14px;font-weight:bold;">${time} IST</td>
+                      </tr>
+                      <tr>
+                        <td style="padding:8px 0;color:#888;font-size:14px;">Mode</td>
+                        <td style="padding:8px 0;color:#333;font-size:14px;font-weight:bold;">
+                          ${meetLink ? `<a href="${meetLink}" style="color:#1A237E;text-decoration:underline;" target="_blank">Google Meet Link</a>` : 'Online (link shared before session)'}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding:8px 0;color:#888;font-size:14px;">Booking ID</td>
+                        <td style="padding:8px 0;color:#333;font-size:14px;font-weight:bold;">#${bookingId}</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#E8EAF6;border-radius:4px;margin-bottom:24px;">
+                <tr>
+                  <td style="padding:16px;">
+                    <p style="color:#1A237E;font-size:14px;margin:0 0 8px 0;font-weight:bold;">
+                      To make the most of your session:
+                    </p>
+                    <ul style="color:#555;font-size:13px;margin:0;padding-left:20px;line-height:1.8;">
+                      <li>Keep your current preparation status ready</li>
+                      <li>Note down your doubts and questions beforehand</li>
+                      <li>Have your optional subject choice in mind</li>
+                      <li>Be ready 5 minutes before your slot</li>
+                    </ul>
+                  </td>
+                </tr>
+              </table>
+
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td style="border-top:1px solid #eee;padding-top:20px;text-align:center;">
+                    <p style="font-size:15px;color:#555;font-style:italic;margin:0 0 16px 0;">
+                      "Every expert was once a beginner. Every champion 
+                       was once a contender that refused to give up."
+                    </p>
+                    <p style="margin:0;font-size:16px;color:#FF6B00;font-weight:bold;">
+                      All the best on your UPSC journey!
+                    </p>
+                  </td>
+                </tr>
+              </table>
             </td>
           </tr>
+
           <tr>
-            <td style="padding:8px 0;color:#888;font-size:14px;">
-              📅 Date
-            </td>
-            <td style="padding:8px 0;color:#333;font-size:14px;font-weight:bold;">
-              ${date}
+            <td style="background-color:#1A237E;padding:20px;text-align:center;">
+              <p style="color:rgba(255,255,255,0.7);font-size:12px;margin:0;">
+                Lakshya IAS Academy | Mukherjee Nagar, New Delhi
+              </p>
+              <p style="color:rgba(255,255,255,0.7);font-size:12px;margin:4px 0 0 0;">
+                appointments@lakshyaias.in | lakshyaias.in
+              </p>
+              <p style="color:rgba(255,255,255,0.5);font-size:11px;margin:8px 0 0 0;">
+                Jai Hind
+              </p>
             </td>
           </tr>
-          <tr>
-            <td style="padding:8px 0;color:#888;font-size:14px;">
-              🕐 Time
-            </td>
-            <td style="padding:8px 0;color:#333;font-size:14px;font-weight:bold;">
-              ${time} IST
-            </td>
-          </tr>
-          <tr>
-            <td style="padding:8px 0;color:#888;font-size:14px;">
-              📍 Mode
-            </td>
-            <td style="padding:8px 0;color:#333;font-size:14px;font-weight:bold;">
-              ${meetLink ? `<a href="${meetLink}" style="color:#1A237E;text-decoration:underline;" target="_blank">Google Meet Link</a>` : 'Online (link shared before session)'}
-            </td>
-          </tr>
-          <tr>
-            <td style="padding:8px 0;color:#888;font-size:14px;">
-              🔖 Booking ID
-            </td>
-            <td style="padding:8px 0;color:#333;font-size:14px;font-weight:bold;">
-              #${bookingId}
-            </td>
-          </tr>
+          
         </table>
-      </div>
-
-      <!-- Preparation Tips -->
-      <div style="background:#E8EAF6;border-radius:4px;padding:16px;margin-bottom:24px;">
-        <p style="color:#1A237E;font-size:14px;margin:0 0 8px 0;font-weight:bold;">
-          💡 To make the most of your session:
-        </p>
-        <ul style="color:#555;font-size:13px;margin:0;padding-left:20px;line-height:1.8;">
-          <li>Keep your current preparation status ready</li>
-          <li>Note down your doubts and questions beforehand</li>
-          <li>Have your optional subject choice in mind</li>
-          <li>Be ready 5 minutes before your slot</li>
-        </ul>
-      </div>
-
-      <!-- Motivational Footer -->
-      <p style="font-size:15px;color:#555;text-align:center;
-                font-style:italic;border-top:1px solid #eee;
-                padding-top:20px;">
-        "Every expert was once a beginner. Every champion 
-         was once a contender that refused to give up."
-      </p>
-      <p style="text-align:center;font-size:16px;
-                color:#FF6B00;font-weight:bold;">
-        All the best on your UPSC journey! 🎯
-      </p>
-    </div>
-
-    <!-- Footer -->
-    <div style="background:#1A237E;padding:20px;text-align:center;">
-      <p style="color:rgba(255,255,255,0.7);font-size:12px;margin:0;">
-        Lakshya IAS Academy | Mukherjee Nagar, New Delhi
-      </p>
-      <p style="color:rgba(255,255,255,0.7);font-size:12px;margin:4px 0 0 0;">
-        appointments@lakshyaias.in | lakshyaias.in
-      </p>
-      <p style="color:rgba(255,255,255,0.5);font-size:11px;margin:8px 0 0 0;">
-        Jai Hind 🇮🇳
-      </p>
-    </div>
-  </div>
+      </td>
+    </tr>
+  </table>
 
 </body>
 </html>
@@ -253,12 +266,12 @@ To make the most of your session:
 - Have your optional subject choice in mind
 - Be ready 5 minutes before your slot
 
-All the best on your UPSC journey! 🎯
+All the best on your UPSC journey!
 
 ---
 Lakshya IAS Academy
 Mukherjee Nagar, New Delhi
 appointments@lakshyaias.in | lakshyaias.in
-Jai Hind 🇮🇳
+Jai Hind
   `.trim()
 }

@@ -30,15 +30,37 @@ export default function ChatWindow() {
   const [input,     setInput]     = useState('')
   const [isTyping,  setIsTyping]  = useState(false)
   const [guestId,   setGuestId]   = useState('')
+  const [isLoadingHistory, setIsLoadingHistory] = useState(true)
 
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef       = useRef<HTMLTextAreaElement>(null)
   const containerRef   = useRef<HTMLDivElement>(null)
   const headerRef      = useRef<HTMLDivElement>(null)
 
-  // Init guest ID on mount
+  // Init guest ID on mount and fetch history
   useEffect(() => {
-    setGuestId(getOrCreateGuestId())
+    const initId = getOrCreateGuestId()
+    setGuestId(initId)
+    
+    async function fetchHistory() {
+      try {
+        const res = await fetch(`/api/chat/history?guestId=${initId}`)
+        const data = await res.json()
+        if (data.success && data.messages && data.messages.length > 0) {
+          const historyMessages = data.messages.map((m: any) => ({
+            ...m,
+            timestamp: new Date(m.timestamp)
+          }))
+          setMessages(historyMessages)
+        }
+      } catch (err) {
+        console.error('Failed to load history:', err)
+      } finally {
+        setIsLoadingHistory(false)
+      }
+    }
+    
+    fetchHistory()
   }, [])
 
   // Auto-scroll to bottom
@@ -168,13 +190,19 @@ export default function ChatWindow() {
       {/* Messages area */}
       <div className="flex-1 overflow-y-auto px-4 py-6 space-y-1">
 
-        {messages.map((msg, i) => (
-          <MessageBubble
-            key={msg.id}
-            message={msg}
-            isLast={i === messages.length - 1}
-          />
-        ))}
+        {isLoadingHistory ? (
+          <div className="flex items-center justify-center h-full text-gray-400 text-sm">
+            <span className="animate-pulse">Loading previous messages...</span>
+          </div>
+        ) : (
+          messages.map((msg, i) => (
+            <MessageBubble
+              key={msg.id}
+              message={msg}
+              isLast={i === messages.length - 1}
+            />
+          ))
+        )}
 
         {isTyping && <TypingIndicator />}
         <div ref={messagesEndRef} />

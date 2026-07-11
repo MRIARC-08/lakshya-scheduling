@@ -6,6 +6,8 @@ import { useRef } from 'react'
 import { useSession } from 'next-auth/react'
 import Image from 'next/image'
 import clsx from 'clsx'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 
 export interface Message {
   id:        string
@@ -109,19 +111,26 @@ export default function MessageBubble({ message, isLast }: Props) {
         {/* Bubble */}
         <div
           className={clsx(
-            'px-4 py-3 rounded-2xl text-sm leading-relaxed',
+            'px-4 py-3 rounded-2xl text-sm leading-relaxed overflow-hidden',
             isUser
               ? 'bg-navy-700 text-white rounded-br-none'
               : 'bg-white text-gray-800 rounded-bl-none border border-gray-100 shadow-sm'
           )}
         >
-          {/* Render message with line breaks */}
-          {message.content.split('\n').map((line, i) => (
-            <span key={i}>
-              {line}
-              {i < message.content.split('\n').length - 1 && <br />}
-            </span>
-          ))}
+          {isUser ? (
+            message.content.split('\n').map((line, i) => (
+              <span key={i}>
+                {line}
+                {i < message.content.split('\n').length - 1 && <br />}
+              </span>
+            ))
+          ) : (
+            <div className="prose prose-sm prose-saffron max-w-none">
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                {message.content}
+              </ReactMarkdown>
+            </div>
+          )}
         </div>
 
         {/* Confirmed badge */}

@@ -79,7 +79,7 @@ router.post('/send', async (req: Request, res: Response) => {
       from: fromEmail,
       fromName,
       to,
-      subject: `Your ${sessionType} at Lakshya IAS is Confirmed! 🎯`,
+      subject: `Your ${sessionType} at Lakshya IAS is Confirmed!`,
       htmlBody,
       textBody,
     })
@@ -100,7 +100,7 @@ router.post('/send', async (req: Request, res: Response) => {
       success: true,
       messageId: result.id,
       to,
-      subject: `Your ${sessionType} at Lakshya IAS is Confirmed! 🎯`,
+      subject: `Your ${sessionType} at Lakshya IAS is Confirmed!`,
       message: `Confirmation email sent to ${to}`,
     })
   } catch (error) {
