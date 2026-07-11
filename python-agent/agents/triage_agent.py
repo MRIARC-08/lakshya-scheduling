@@ -81,9 +81,7 @@ RESPOND IN THIS EXACT FORMAT:
 }}
 ```
 
-If routing to booking, your response should acknowledge warmly
-and set expectations. Do NOT ask for details — booking specialist
-will handle that.
+If routing to booking, do not write a conversational response. The booking specialist will take over seamlessly and ask the next question.
 """
 
 
@@ -136,12 +134,13 @@ def create_triage_agent(llm: ChatGroq):
         extracted = parsed.get("extracted_info", {})
 
         update = {
-            "messages":      [AIMessage(content=parsed["response"],
-                                        name="arjun_triage")],
             "current_agent": "triage",
             "route_to":      "booking_specialist" if route else None,
             "booking_intent": route,
         }
+        
+        if not route:
+            update["messages"] = [AIMessage(content=parsed["response"], name="arjun_triage")]
 
         # Pre-populate any info already mentioned
         if route:
