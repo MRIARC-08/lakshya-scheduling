@@ -86,13 +86,19 @@ def chat(req: ChatRequest):
         if req.user_context.name:
             input_state["collected_name"] = req.user_context.name
 
-    try:
-        result = graph.invoke(input_state, config=config_dict)
-    except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Agent error: {str(e)}"
-        )
+    result = None
+    for attempt in range(2):
+        try:
+            result = graph.invoke(input_state, config=config_dict)
+            break
+        except Exception as e:
+            if attempt == 0:
+                print(f"Warning: graph.invoke failed (likely DB disconnect). Retrying... Error: {e}")
+                continue
+            raise HTTPException(
+                status_code=500,
+                detail=f"Agent error: {str(e)}"
+            )
 
     # Extract last AI message
     last_response = ""

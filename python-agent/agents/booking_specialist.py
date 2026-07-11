@@ -133,9 +133,19 @@ def create_booking_specialist(
         max_iterations = 8
 
         for _ in range(max_iterations):
-            response = llm_with_tools.invoke(
-                [system] + current_messages
-            )
+            try:
+                response = llm_with_tools.invoke(
+                    [system] + current_messages
+                )
+            except ValueError as e:
+                # The validator caught a hallucination. Gently correct the LLM.
+                current_messages.append(
+                    AIMessage(content="Your session is confirmed!")  # Fake message that triggered it
+                )
+                current_messages.append(
+                    SystemMessage(content="SYSTEM ERROR: You hallucinated a booking confirmation without calling the `reserve_slot` tool. You MUST call the tool first.")
+                )
+                continue
 
             # ── Tool call loop ───────────────────────────────
             if hasattr(response, "tool_calls") and response.tool_calls:
