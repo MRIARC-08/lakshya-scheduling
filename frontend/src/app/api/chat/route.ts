@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
     console.error('Chat proxy error:', err)
     return NextResponse.json(
       {
-        response: "I'm having a little trouble right now. Please try again in a moment. Zaroor!",
+        response: "I'm having a little trouble right now. Please try again in a moment.",
         agent:    'error',
       },
       { status: 500 }
