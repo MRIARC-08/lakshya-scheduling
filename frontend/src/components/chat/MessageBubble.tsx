@@ -111,10 +111,10 @@ export default function MessageBubble({ message, isLast }: Props) {
         {/* Bubble */}
         <div
           className={clsx(
-            'px-4 py-3 rounded-2xl text-sm leading-relaxed overflow-hidden',
+            'px-5 py-3.5 rounded-2xl text-[15px] leading-relaxed overflow-hidden shadow-sm transition-all',
             isUser
-              ? 'bg-navy-700 text-white rounded-br-none'
-              : 'bg-white text-gray-800 rounded-bl-none border border-gray-100 shadow-sm'
+              ? 'bg-gradient-to-br from-saffron-500 to-saffron-600 text-white rounded-br-sm'
+              : 'bg-white text-gray-800 rounded-bl-sm border border-gray-100 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)]'
           )}
         >
           {isUser ? (
@@ -137,9 +137,9 @@ export default function MessageBubble({ message, isLast }: Props) {
         {message.confirmed && (
           <div className="confirmed-badge flex items-center gap-1
                           bg-green-100 text-green-700 text-xs
-                          font-semibold px-3 py-1 rounded-full
-                          border border-green-200 ml-1">
-            <span>✅</span>
+                          font-semibold px-3 py-1.5 rounded-full
+                          border border-green-200 ml-1 shadow-sm">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             <span>Session Confirmed!</span>
           </div>
         )}

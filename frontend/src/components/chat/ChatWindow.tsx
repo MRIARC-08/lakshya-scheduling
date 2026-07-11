@@ -6,9 +6,13 @@ import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import MessageBubble, { Message } from './MessageBubble'
 import TypingIndicator from './TypingIndicator'
-import { getOrCreateGuestId } from '@/lib/guest'
 import { v4 as uuidv4 } from 'uuid'
 import clsx from 'clsx'
+
+interface ChatWindowProps {
+  threadId: string
+  onNewMessage?: (message: string) => void
+}
 
 const WELCOME_MESSAGE: Message = {
   id:        'welcome',
@@ -24,12 +28,11 @@ const QUICK_REPLIES = [
   'Book for next Monday',
 ]
 
-export default function ChatWindow() {
+export default function ChatWindow({ threadId, onNewMessage }: ChatWindowProps) {
   const { data: session } = useSession()
   const [messages,  setMessages]  = useState<Message[]>([WELCOME_MESSAGE])
   const [input,     setInput]     = useState('')
   const [isTyping,  setIsTyping]  = useState(false)
-  const [guestId,   setGuestId]   = useState('')
   const [isLoadingHistory, setIsLoadingHistory] = useState(true)
 
   const messagesEndRef = useRef<HTMLDivElement>(null)
@@ -37,17 +40,17 @@ export default function ChatWindow() {
   const containerRef   = useRef<HTMLDivElement>(null)
   const headerRef      = useRef<HTMLDivElement>(null)
 
-  // Init guest ID on mount and fetch history
+  // Fetch history when threadId changes
   useEffect(() => {
-    const initId = getOrCreateGuestId()
-    setGuestId(initId)
-    
     async function fetchHistory() {
+      setIsLoadingHistory(true)
+      setMessages([WELCOME_MESSAGE])
+      
       try {
-        const res = await fetch(`/api/chat/history?guestId=${initId}`)
+        const res = await fetch(`/api/chat/history?threadId=${threadId}`)
         const data = await res.json()
         if (data.success && data.messages && data.messages.length > 0) {
-          const historyMessages = data.messages.map((m: any) => ({
+          const historyMessages = data.messages.map((m: { timestamp: string | number | Date }) => ({
             ...m,
             timestamp: new Date(m.timestamp)
           }))
@@ -61,7 +64,7 @@ export default function ChatWindow() {
     }
     
     fetchHistory()
-  }, [])
+  }, [threadId])
 
   // Auto-scroll to bottom
   useEffect(() => {
@@ -91,13 +94,17 @@ export default function ChatWindow() {
     setInput('')
     setIsTyping(true)
 
+    if (messages.length === 1 && onNewMessage) {
+      onNewMessage(text.trim())
+    }
+
     try {
       const res = await fetch('/api/chat', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: text.trim(),
-          guestId: session?.user?.id ?? guestId,
+          threadId: threadId,
         }),
       })
 
@@ -124,7 +131,7 @@ export default function ChatWindow() {
     } finally {
       setIsTyping(false)
     }
-  }, [isTyping, guestId, session])
+  }, [isTyping, threadId, messages.length, onNewMessage])
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -136,12 +143,12 @@ export default function ChatWindow() {
   return (
     <div
       ref={containerRef}
-      className="flex flex-col h-screen bg-gray-50"
+      className="flex flex-col h-full bg-gray-50"
     >
       {/* Header */}
       <div
         ref={headerRef}
-        className="bg-gradient-to-r from-navy-900 to-navy-800
+        className="glass-dark
                    text-white px-4 py-3 flex items-center gap-3
                    shadow-lg pt-20"
       >
@@ -156,8 +163,8 @@ export default function ChatWindow() {
         <div className="flex-1">
           <div className="flex items-center gap-2">
             <h2 className="font-semibold text-sm">Arjun</h2>
-            <span className="bg-saffron-500/30 border border-saffron-500/50
-                             text-saffron-300 text-xs px-2 py-0.5 rounded-full">
+            <span className="bg-saffron-500/20 border border-saffron-500/30
+                             text-saffron-300 text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full font-bold">
               Scheduling Assistant
             </span>
           </div>
@@ -227,7 +234,7 @@ export default function ChatWindow() {
       )}
 
       {/* Input area */}
-      <div className="bg-white border-t border-gray-100 px-4 py-3 shadow-up">
+      <div className="bg-white/80 backdrop-blur-md border-t border-gray-100 px-4 py-4 shadow-up relative z-10">
         <div className="flex items-end gap-3 max-w-4xl mx-auto">
           <textarea
             ref={inputRef}
@@ -236,12 +243,12 @@ export default function ChatWindow() {
             onKeyDown={handleKeyDown}
             placeholder="Type your message... (Enter to send)"
             rows={1}
-            className="flex-1 resize-none bg-gray-50 border border-gray-200
-                       rounded-2xl px-4 py-3 text-sm text-gray-800
+            className="flex-1 resize-none bg-gray-50/50 border border-gray-200
+                       rounded-2xl px-4 py-3.5 text-sm text-gray-800
                        placeholder-gray-400 focus:outline-none
-                       focus:ring-2 focus:ring-saffron-300
-                       focus:border-saffron-300 transition-all
-                       max-h-32 leading-relaxed"
+                       focus:ring-4 focus:ring-saffron-500/20
+                       focus:border-saffron-400 transition-all duration-300
+                       max-h-32 leading-relaxed shadow-inner"
             style={{
               height: 'auto',
               minHeight: '48px',

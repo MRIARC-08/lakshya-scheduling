@@ -16,7 +16,7 @@ export default async function BookingsPage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen bg-gray-50 pt-24 px-4 pb-12">
+      <main className="min-h-screen bg-navy-50/30 bg-grid-pattern pt-24 px-4 pb-12">
         <div className="max-w-3xl mx-auto">
 
           {/* Header */}
@@ -32,20 +32,23 @@ export default async function BookingsPage() {
 
           {/* Bookings list */}
           {bookings.length === 0 ? (
-            <div className="text-center py-20 bg-white rounded-2xl
-                            border border-gray-100 shadow-sm">
-              <p className="text-5xl mb-4">📅</p>
-              <h3 className="text-xl font-semibold text-gray-700 mb-2">
+            <div className="text-center py-20 bg-white rounded-3xl
+                            border border-gray-100 shadow-[0_2px_20px_-3px_rgba(6,81,237,0.05)]">
+              <div className="mx-auto w-20 h-20 bg-gradient-to-br from-navy-50 to-gray-100 rounded-2xl flex items-center justify-center mb-6 shadow-inner">
+                <svg className="w-10 h-10 text-navy-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+              </div>
+              <h3 className="text-xl font-bold text-navy-900 mb-2">
                 No sessions yet
               </h3>
-              <p className="text-gray-500 mb-6">
-                Book your first session with Arjun!
+              <p className="text-gray-500 mb-8 max-w-sm mx-auto leading-relaxed">
+                Your journey starts here. Book your first mentorship session with Arjun!
               </p>
               <a
                 href="/chat"
                 className="inline-flex items-center gap-2 bg-saffron-500
-                           hover:bg-saffron-600 text-white font-medium
-                           px-6 py-3 rounded-full transition-colors"
+                           hover:bg-saffron-600 text-white font-semibold
+                           px-8 py-3.5 rounded-full transition-all duration-300
+                           shadow-md hover:shadow-lg hover:-translate-y-0.5"
               >
                 Book a Session
               </a>

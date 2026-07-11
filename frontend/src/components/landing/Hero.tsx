@@ -56,17 +56,15 @@ export default function Hero() {
   return (
     <div
       ref={containerRef}
-      className="min-h-screen bg-gradient-to-br from-navy-900
-                 via-navy-800 to-navy-900 flex flex-col
+      className="min-h-screen bg-navy-900 bg-grid-pattern flex flex-col
                  items-center justify-center text-center px-4
                  relative overflow-hidden"
     >
-      {/* Background pattern */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-20 left-20 w-64 h-64
-                        rounded-full bg-saffron-500 blur-3xl" />
-        <div className="absolute bottom-20 right-20 w-96 h-96
-                        rounded-full bg-saffron-400 blur-3xl" />
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute top-0 -left-1/4 w-[150%] h-[150%] animate-float mix-blend-screen opacity-40">
+          <div className="absolute top-20 left-1/3 w-96 h-96 rounded-full bg-saffron-500 blur-[128px]" />
+          <div className="absolute bottom-20 right-1/3 w-[500px] h-[500px] rounded-full bg-navy-400 blur-[128px]" />
+        </div>
       </div>
 
       <div className="relative z-10 max-w-4xl mx-auto">
@@ -82,8 +80,12 @@ export default function Hero() {
           </span>
         </div>
 
-        {/* Emoji */}
-        <div className="hero-emoji text-7xl mb-6">🎯</div>
+        {/* Hero Icon */}
+        <div className="hero-emoji mx-auto mb-8 w-24 h-24 rounded-3xl bg-gradient-to-br from-navy-800 to-navy-900 border border-white/10 flex items-center justify-center shadow-2xl">
+          <svg className="w-12 h-12 text-saffron-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+          </svg>
+        </div>
 
         {/* Heading */}
         <h1
@@ -107,25 +109,24 @@ export default function Hero() {
         </p>
 
         {/* CTAs */}
-        <div ref={ctaRef} className="flex flex-col sm:flex-row
-                                      gap-4 justify-center">
+        <div ref={ctaRef} className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <Link
             href="/chat"
-            className="inline-flex items-center gap-2 bg-saffron-500
-                       hover:bg-saffron-400 text-white font-semibold
-                       px-8 py-4 rounded-full text-lg transition-all
-                       shadow-lg shadow-saffron-500/30 hover:scale-105
-                       active:scale-95"
+            className="group relative inline-flex items-center gap-2 bg-saffron-500
+                       text-white font-semibold px-8 py-4 rounded-full text-lg
+                       shadow-[0_0_40px_rgba(255,107,0,0.3)] transition-all duration-300
+                       hover:scale-[1.02] hover:shadow-[0_0_60px_rgba(255,107,0,0.5)]
+                       active:scale-[0.98] overflow-hidden"
           >
-            <span>Book Free Session</span>
-            <span>→</span>
+            <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-shimmer" />
+            <span className="relative">Book Free Session</span>
+            <svg className="w-5 h-5 relative transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
           </Link>
           <Link
             href="#sessions"
-            className="inline-flex items-center gap-2 border
-                       border-white/30 hover:border-white/60 text-white
+            className="inline-flex items-center gap-2 glass-dark text-white
                        font-medium px-8 py-4 rounded-full text-lg
-                       transition-all hover:bg-white/10"
+                       transition-all duration-300 hover:bg-white/10 hover:shadow-lg"
           >
             View Session Types
           </Link>

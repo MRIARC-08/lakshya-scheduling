@@ -10,7 +10,9 @@ gsap.registerPlugin(ScrollTrigger)
 
 const sessions = [
   {
-    icon:     '💬',
+    icon: (
+      <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+    ),
     name:     'Free Counselling',
     duration: '30 min',
     desc:     'Perfect first step. Understand your preparation level and get a roadmap.',
@@ -18,7 +20,9 @@ const sessions = [
     free:     true,
   },
   {
-    icon:     '🎓',
+    icon: (
+      <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l9-5-9-5-9 5 9 5z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"></path></svg>
+    ),
     name:     'One-on-One Mentorship',
     duration: '60 min',
     desc:     'Deep dive session with expert faculty. Covers strategy, optionals, and weak areas.',
@@ -26,7 +30,9 @@ const sessions = [
     free:     false,
   },
   {
-    icon:     '🎤',
+    icon: (
+      <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+    ),
     name:     'Mock Interview',
     duration: '45 min',
     desc:     'Simulate the UPSC Personality Test. Get detailed feedback from ex-bureaucrats.',
@@ -34,7 +40,9 @@ const sessions = [
     free:     false,
   },
   {
-    icon:     '📋',
+    icon: (
+      <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+    ),
     name:     'Study Plan Review',
     duration: '30 min',
     desc:     'Get your study plan reviewed and optimized for your target year.',
@@ -42,7 +50,9 @@ const sessions = [
     free:     false,
   },
   {
-    icon:     '✍️',
+    icon: (
+      <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+    ),
     name:     'Answer Writing',
     duration: '90 min',
     desc:     'Intensive GS and Essay answer writing workshop with faculty evaluation.',
@@ -100,51 +110,54 @@ export default function SessionTypes() {
           {sessions.map((session) => (
             <div
               key={session.name}
-              className="bg-white rounded-2xl p-6 shadow-sm
-                         border border-gray-100 hover:shadow-md
-                         transition-all hover:-translate-y-1 group"
+              className="relative bg-white rounded-3xl p-8 shadow-sm
+                         border border-gray-100 hover:shadow-xl
+                         transition-all duration-300 hover:-translate-y-2 group overflow-hidden"
             >
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-gray-50 to-white rounded-bl-full -z-10 transition-transform duration-500 group-hover:scale-150"></div>
+
               {/* Icon */}
               <div className={`inline-flex items-center justify-center
-                               w-12 h-12 rounded-xl bg-gradient-to-br
-                               ${session.color} text-2xl mb-4`}>
+                               w-14 h-14 rounded-2xl bg-gradient-to-br
+                               ${session.color} shadow-lg mb-6 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3`}>
                 {session.icon}
               </div>
 
               {/* Header */}
-              <div className="flex items-start justify-between mb-3">
-                <h3 className="font-semibold text-navy-900 text-lg
+              <div className="flex items-start justify-between mb-4">
+                <h3 className="font-bold text-navy-900 text-xl
                                leading-tight">
                   {session.name}
                 </h3>
                 {session.free && (
-                  <span className="bg-green-100 text-green-700 text-xs
-                                   font-bold px-2 py-1 rounded-full ml-2
-                                   shrink-0">
+                  <span className="bg-saffron-100 text-saffron-600 text-[10px] uppercase tracking-wider
+                                   font-bold px-3 py-1.5 rounded-full ml-3
+                                   shrink-0 shadow-sm border border-saffron-200">
                     FREE
                   </span>
                 )}
               </div>
 
               {/* Duration */}
-              <p className="text-saffron-500 text-sm font-medium mb-3">
-                ⏱ {session.duration}
-              </p>
+              <div className="flex items-center gap-1.5 text-navy-500 text-sm font-semibold mb-4 bg-navy-50 w-max px-3 py-1 rounded-lg">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                {session.duration}
+              </div>
 
               {/* Description */}
-              <p className="text-gray-600 text-sm leading-relaxed mb-4">
+              <p className="text-gray-500 text-[15px] leading-relaxed mb-8 h-12">
                 {session.desc}
               </p>
 
               {/* CTA */}
               <Link
                 href="/chat"
-                className="inline-flex items-center gap-1 text-navy-700
-                           hover:text-saffron-500 text-sm font-medium
-                           transition-colors group-hover:gap-2"
+                className="inline-flex items-center gap-2 text-saffron-500
+                           hover:text-saffron-600 text-sm font-bold uppercase tracking-wide
+                           transition-colors group-hover:gap-3"
               >
                 Book this session
-                <span className="transition-all">→</span>
+                <span className="transition-all bg-saffron-50 w-6 h-6 rounded-full flex items-center justify-center group-hover:bg-saffron-100 group-hover:text-saffron-600">→</span>
               </Link>
             </div>
           ))}

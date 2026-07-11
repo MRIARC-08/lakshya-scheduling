@@ -1,15 +1,13 @@
 import { auth }        from '@/lib/auth'
-import { getOrCreateGuestId } from '@/lib/guest'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(req: NextRequest) {
   const session = await auth()
-  const body    = await req.json()
-  const { message, guestId } = body
+  const body = await req.json()
+  const { message, threadId: clientThreadId, guestId } = body
 
-  // Build thread ID — authenticated users use their ID
-  // guests use the guestId from client
-  const threadId = session?.user?.id ?? guestId ?? 'anonymous'
+  // If a threadId is provided by the client, use it. Otherwise fallback to user.id or guestId
+  const threadId = clientThreadId ?? session?.user?.id ?? guestId ?? 'anonymous'
 
   const userContext = {
     is_authenticated: !!session?.user,

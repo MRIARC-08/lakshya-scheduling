@@ -4,11 +4,12 @@ import { NextRequest, NextResponse } from 'next/server'
 export async function GET(req: NextRequest) {
   const session = await auth()
   
-  // Extract guestId from query params
+  // Extract threadId or guestId from query params
   const searchParams = req.nextUrl.searchParams
+  const clientThreadId = searchParams.get('threadId')
   const guestId = searchParams.get('guestId')
   
-  const threadId = session?.user?.id ?? guestId ?? 'anonymous'
+  const threadId = clientThreadId ?? session?.user?.id ?? guestId ?? 'anonymous'
   
   if (threadId === 'anonymous') {
     return NextResponse.json({ success: true, messages: [] })

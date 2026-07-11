@@ -9,14 +9,26 @@ import re
 
 _pool: Optional[ThreadedConnectionPool] = None
 
+import time
+
 def get_pool() -> ThreadedConnectionPool:
     global _pool
     if _pool is None:
-        _pool = ThreadedConnectionPool(
-            1,
-            10,
-            dsn=config.DATABASE_URL_POOLED,
-        )
+        retries = 5
+        for i in range(retries):
+            try:
+                _pool = ThreadedConnectionPool(
+                    1,
+                    10,
+                    dsn=config.DATABASE_URL_POOLED,
+                )
+                break
+            except psycopg2.OperationalError as e:
+                if i < retries - 1:
+                    print(f"⚠️ Neon DB wake-up or connection issue. Retrying in 2 seconds... ({i+1}/{retries})")
+                    time.sleep(2)
+                else:
+                    raise e
     return _pool
 
 def get_connection():

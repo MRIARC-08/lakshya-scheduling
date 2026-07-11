@@ -35,8 +35,11 @@ const config: Config = {
       },
       animation: {
         'fade-in':    'fadeIn 0.5s ease-out',
-        'slide-up':   'slideUp 0.4s ease-out',
+        'slide-up':   'slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
         'pulse-dot':  'pulseDot 1.4s infinite',
+        'pop-in':     'popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+        'float':      'float 6s ease-in-out infinite',
+        'shimmer':    'shimmer 2.5s linear infinite',
       },
       keyframes: {
         fadeIn: {
@@ -50,6 +53,18 @@ const config: Config = {
         pulseDot: {
           '0%, 80%, 100%': { transform: 'scale(0.6)', opacity: '0.4' },
           '40%':           { transform: 'scale(1.0)', opacity: '1'   },
+        },
+        popIn: {
+          '0%':   { transform: 'scale(0.9) translateY(10px)', opacity: '0' },
+          '100%': { transform: 'scale(1) translateY(0)', opacity: '1' },
+        },
+        float: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-10px)' },
+        },
+        shimmer: {
+          '0%': { backgroundPosition: '-1000px 0' },
+          '100%': { backgroundPosition: '1000px 0' },
         },
       },
     },

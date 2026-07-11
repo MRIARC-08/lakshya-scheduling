@@ -2,9 +2,11 @@ from typing import TypedDict, Annotated, Optional, Literal
 from langgraph.graph import StateGraph, START, END
 from langgraph.graph.message import add_messages
 from langgraph.checkpoint.postgres import PostgresSaver
-from langchain_core.messages import BaseMessage
+from langchain_core.messages import BaseMessage, AIMessage
+from langchain_core.runnables import RunnableLambda
 from langchain_groq import ChatGroq
 import psycopg
+from psycopg_pool import ConnectionPool
 
 from tools.check_availability import check_availability
 from tools.reserve_slot import reserve_slot
@@ -56,6 +58,7 @@ def build_graph():
         model_name=config.LLM_MODEL,
         temperature=config.LLM_TEMPERATURE,
         groq_api_key=config.GROQ_API_KEY,
+        max_retries=0,
     )
     
     # Fallback LLM in case the primary hits rate limits
@@ -63,6 +66,7 @@ def build_graph():
         model_name="llama-3.1-8b-instant", 
         temperature=config.LLM_TEMPERATURE,
         groq_api_key=config.GROQ_API_KEY,
+        max_retries=0,
     )
     
     # Secondary Fallback LLM (Mixtral) in case Llama 3 models are completely exhausted
@@ -70,15 +74,24 @@ def build_graph():
         model_name="mixtral-8x7b-32768", 
         temperature=config.LLM_TEMPERATURE,
         groq_api_key=config.GROQ_API_KEY,
+        max_retries=0,
     )
 
     tools          = [check_availability, reserve_slot, send_confirmation_email]
     
+    def validate_tool_call(response: AIMessage) -> AIMessage:
+        if not hasattr(response, "tool_calls") or not response.tool_calls:
+            content_lower = response.content.lower()
+            if "successfully booked" in content_lower or "is confirmed" in content_lower:
+                raise ValueError("Model hallucinated booking without calling tools.")
+        return response
+    
     # Bind tools to both and add fallback
-    primary_with_tools = llm.bind_tools(tools)
+    primary_with_tools = llm.bind_tools(tools) | RunnableLambda(validate_tool_call)
     fallback_with_tools = fallback_llm.bind_tools(tools)
     secondary_fallback_with_tools = secondary_fallback_llm.bind_tools(tools)
     
+    # Use the primary LLM with the hallucination validator to trigger fallbacks only when necessary
     llm_with_tools = primary_with_tools.with_fallbacks([fallback_with_tools, secondary_fallback_with_tools])
     
     triage_llm = llm.with_fallbacks([fallback_llm, secondary_fallback_llm])
@@ -102,14 +115,21 @@ def build_graph():
     graph.add_edge("booking_specialist", END)
 
     # ── Postgres checkpointer (Neon) ─────────────────────────
-    # Uses direct URL (not pooled) for checkpointer
-    conn = psycopg.connect(config.DATABASE_URL, autocommit=True)
-    checkpointer = PostgresSaver(conn)
+    # Uses ConnectionPool for checkpointer to prevent idle drops
+    pool = get_pool()
+    checkpointer = PostgresSaver(pool)
 
     # Creates checkpoint tables in Neon automatically
     checkpointer.setup()
 
     return graph.compile(checkpointer=checkpointer)
+
+_pool = None
+def get_pool():
+    global _pool
+    if _pool is None:
+        _pool = ConnectionPool(conninfo=config.DATABASE_URL, kwargs={"autocommit": True})
+    return _pool
 
 
 def get_graph():

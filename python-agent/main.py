@@ -65,7 +65,7 @@ class LinkGuestRequest(BaseModel):
 # ── Chat endpoint ─────────────────────────────────────────────
 
 @app.post("/chat", response_model=ChatResponse)
-async def chat(req: ChatRequest):
+def chat(req: ChatRequest):
     graph = get_graph()
     config_dict = {
         "configurable": {"thread_id": req.thread_id}
@@ -112,7 +112,7 @@ async def chat(req: ChatRequest):
 
 
 @app.get("/chat/history/{thread_id}")
-async def get_chat_history(thread_id: str):
+def get_chat_history(thread_id: str):
     graph = get_graph()
     config_dict = {"configurable": {"thread_id": thread_id}}
     
@@ -167,7 +167,7 @@ async def get_chat_history(thread_id: str):
 # ── Guest → User mapping (called by NextAuth callback) ───────
 
 @app.post("/auth/link-guest-bookings")
-async def link_guest_bookings(req: LinkGuestRequest):
+def link_guest_bookings(req: LinkGuestRequest):
     updated = link_guest_bookings_to_user(req.email, req.user_id)
     return {
         "success":          True,
@@ -181,13 +181,13 @@ async def link_guest_bookings(req: LinkGuestRequest):
 # ── Bookings endpoints ────────────────────────────────────────
 
 @app.get("/bookings/user/{user_id}")
-async def get_user_bookings(user_id: str):
+def get_user_bookings(user_id: str):
     bookings = get_bookings_by_user(user_id)
     return {"success": True, "bookings": bookings}
 
 
 @app.get("/bookings/email/{email}")
-async def get_bookings_by_email_route(email: str):
+def get_bookings_by_email_route(email: str):
     bookings = get_bookings_by_email(email)
     return {"success": True, "bookings": bookings}
 
