@@ -42,6 +42,16 @@ def send_confirmation_email(
     human_time = format_time_human(time)
 
     try:
+        from email_validator import validate_email, EmailNotValidError
+        valid_email_info = validate_email(customer_email, check_deliverability=True)
+        customer_email = valid_email_info.normalized
+    except EmailNotValidError as e:
+        return json.dumps({
+            "success": False,
+            "error": f"Invalid email address '{customer_email}': {str(e)}",
+        })
+
+    try:
         with httpx.Client(timeout=20.0) as client:
             response = client.post(
                 f"{config.CORSAIR_BRIDGE_URL}/api/email/send",
