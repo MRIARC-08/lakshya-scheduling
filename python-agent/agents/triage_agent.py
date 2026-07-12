@@ -140,7 +140,7 @@ def create_triage_agent(llm: ChatGroq):
         }
         
         if not route:
-            update["messages"] = [AIMessage(content=parsed["response"], name="arjun_triage")]
+            update["messages"] = [AIMessage(content=parsed.get("response", ""), name="arjun_triage")]
 
         # Pre-populate any info already mentioned
         if route:
