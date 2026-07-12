@@ -74,19 +74,17 @@ export default function Navbar() {
           <Link
             href="/chat?new=true"
             className="text-sm text-gray-600 hover:text-gray-900
-                       transition-colors font-medium relative group"
+                       transition-colors font-medium relative"
           >
             Book Session
-            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-black transition-all duration-300 group-hover:w-full"></span>
           </Link>
           {session && (
             <Link
               href="/bookings"
               className="text-sm text-gray-600 hover:text-gray-900
-                         transition-colors font-medium relative group"
+                         transition-colors font-medium relative"
             >
               My Bookings
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-black transition-all duration-300 group-hover:w-full"></span>
             </Link>
           )}
         </div>

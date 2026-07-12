@@ -67,7 +67,7 @@ export default function Hero() {
   return (
     <div
       ref={containerRef}
-      className="min-h-screen bg-transparent flex flex-col
+      className="min-h-screen bg-transparent bg-dot-pattern flex flex-col
                  items-center justify-center text-center px-4
                  relative overflow-hidden"
     >
