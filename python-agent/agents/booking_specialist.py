@@ -147,6 +147,30 @@ def create_booking_specialist(
                 )
                 continue
 
+            # ── Fallback hallucination parser ───────────────────────────────
+            # Smaller models like llama-3.1-8b sometimes leak Groq's internal <function> tags
+            # instead of using the proper JSON tool API. We can manually parse them to recover.
+            if not getattr(response, "tool_calls", None) and getattr(response, "content", None):
+                import re
+                content = response.content
+                match = re.search(r"<function=([a-zA-Z0-9_]+)>(.*?)</function>", content, re.DOTALL)
+                if match:
+                    tool_name = match.group(1)
+                    tool_args_str = match.group(2).strip()
+                    try:
+                        import json
+                        tool_args = json.loads(tool_args_str)
+                        # Inject into response so the loop processes it normally
+                        response.tool_calls = [{
+                            "name": tool_name,
+                            "args": tool_args,
+                            "id": f"call_{tool_name}_leaked"
+                        }]
+                        # Remove the leaked tag from content so it's not shown to user
+                        response.content = content[:match.start()].strip()
+                    except Exception:
+                        pass
+
             # ── Tool call loop ───────────────────────────────
             if hasattr(response, "tool_calls") and response.tool_calls:
                 current_messages.append(response)
