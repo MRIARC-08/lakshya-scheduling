@@ -158,7 +158,6 @@ def create_booking_specialist(
                     tool_name = match.group(1)
                     tool_args_str = match.group(2).strip()
                     try:
-                        import json
                         tool_args = json.loads(tool_args_str)
                         # Inject into response so the loop processes it normally
                         response.tool_calls = [{
