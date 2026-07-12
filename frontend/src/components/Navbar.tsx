@@ -22,11 +22,15 @@ export default function Navbar() {
   return (
     <nav
       ref={navRef}
-      className="fixed top-0 left-0 right-0 z-50 glass border-b-0
-                 shadow-sm transition-all duration-300"
+      className="fixed top-0 left-0 right-0 z-50 p-4 transition-all duration-300 pointer-events-none"
     >
-      <div className="max-w-6xl mx-auto px-4 h-16
-                      flex items-center justify-between">
+      <div className="max-w-6xl mx-auto h-16 bg-white/80 backdrop-blur-md border border-[#ebebeb] shadow-sm flex items-center justify-between px-6 relative pointer-events-auto">
+        
+        {/* Corner crosses */}
+        <span className="absolute -top-[12px] -left-[5px] text-[#a3a3a3] leading-none text-xl font-light pointer-events-none">+</span>
+        <span className="absolute -top-[12px] -right-[5px] text-[#a3a3a3] leading-none text-xl font-light pointer-events-none">+</span>
+        <span className="absolute -bottom-[12px] -left-[5px] text-[#a3a3a3] leading-none text-xl font-light pointer-events-none">+</span>
+        <span className="absolute -bottom-[12px] -right-[5px] text-[#a3a3a3] leading-none text-xl font-light pointer-events-none">+</span>
 
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3 group">
