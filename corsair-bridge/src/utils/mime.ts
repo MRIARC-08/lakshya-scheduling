@@ -115,7 +115,7 @@ export function buildConfirmationEmailHtml(params: {
         <table role="presentation" width="560" cellpadding="0" cellspacing="0" border="0" style="background-color:#ffffff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.1);max-width:560px;">
           
           <tr>
-            <td style="background:linear-gradient(135deg,#FF6B00,#1A237E);padding:30px;text-align:center;">
+            <td style="background-color:#1c1c1c;padding:30px;text-align:center;">
               <h1 style="color:white;margin:0;font-size:28px;letter-spacing:1px;">
                 Lakshya IAS Academy
               </h1>
@@ -126,8 +126,8 @@ export function buildConfirmationEmailHtml(params: {
           </tr>
 
           <tr>
-            <td style="background-color:#4CAF50;padding:16px;text-align:center;">
-              <h2 style="color:white;margin:0;font-size:20px;">
+            <td style="background-color:#f4f4f4;padding:16px;text-align:center;border-bottom:1px solid #ebebeb;">
+              <h2 style="color:#1c1c1c;margin:0;font-size:20px;">
                 Session Confirmed!
               </h2>
             </td>
@@ -144,10 +144,10 @@ export function buildConfirmationEmailHtml(params: {
                 UPSC preparation journey!
               </p>
 
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#FFF8F0;border-left:4px solid #FF6B00;border-radius:4px;margin:24px 0;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#fafafa;border:1px solid #ebebeb;border-left:4px solid #1c1c1c;border-radius:4px;margin:24px 0;">
                 <tr>
                   <td style="padding:20px;">
-                    <h3 style="color:#FF6B00;margin:0 0 16px 0;font-size:16px;">
+                    <h3 style="color:#1c1c1c;margin:0 0 16px 0;font-size:16px;">
                       Booking Details
                     </h3>
                     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
@@ -166,7 +166,7 @@ export function buildConfirmationEmailHtml(params: {
                       <tr>
                         <td style="padding:8px 0;color:#888;font-size:14px;">Mode</td>
                         <td style="padding:8px 0;color:#333;font-size:14px;font-weight:bold;">
-                          ${meetLink ? `<a href="${meetLink}" style="color:#1A237E;text-decoration:underline;" target="_blank">Google Meet Link</a>` : 'Online (link shared before session)'}
+                          ${meetLink ? `<a href="${meetLink}" style="color:#1c1c1c;text-decoration:underline;" target="_blank">Google Meet Link</a>` : 'Online (link shared before session)'}
                         </td>
                       </tr>
                       <tr>
@@ -178,10 +178,10 @@ export function buildConfirmationEmailHtml(params: {
                 </tr>
               </table>
 
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#E8EAF6;border-radius:4px;margin-bottom:24px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#fafafa;border:1px solid #ebebeb;border-radius:4px;margin-bottom:24px;">
                 <tr>
                   <td style="padding:16px;">
-                    <p style="color:#1A237E;font-size:14px;margin:0 0 8px 0;font-weight:bold;">
+                    <p style="color:#1c1c1c;font-size:14px;margin:0 0 8px 0;font-weight:bold;">
                       To make the most of your session:
                     </p>
                     <ul style="color:#555;font-size:13px;margin:0;padding-left:20px;line-height:1.8;">
@@ -201,7 +201,7 @@ export function buildConfirmationEmailHtml(params: {
                       "Every expert was once a beginner. Every champion 
                        was once a contender that refused to give up."
                     </p>
-                    <p style="margin:0;font-size:16px;color:#FF6B00;font-weight:bold;">
+                    <p style="margin:0;font-size:16px;color:#1c1c1c;font-weight:bold;">
                       All the best on your UPSC journey!
                     </p>
                   </td>
@@ -211,7 +211,7 @@ export function buildConfirmationEmailHtml(params: {
           </tr>
 
           <tr>
-            <td style="background-color:#1A237E;padding:20px;text-align:center;">
+            <td style="background-color:#1c1c1c;padding:20px;text-align:center;">
               <p style="color:rgba(255,255,255,0.7);font-size:12px;margin:0;">
                 Lakshya IAS Academy | Mukherjee Nagar, New Delhi
               </p>

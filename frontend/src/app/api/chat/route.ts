@@ -29,6 +29,13 @@ export async function POST(req: NextRequest) {
       }),
     })
 
+    if (agentRes.status === 429) {
+      return NextResponse.json({
+        response: "We've reached our API rate limit for now. Please wait a few moments and try again.",
+        agent: 'system'
+      })
+    }
+
     if (!agentRes.ok) {
       throw new Error(`Agent error: ${agentRes.status}`)
     }
