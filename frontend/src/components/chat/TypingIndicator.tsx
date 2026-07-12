@@ -31,17 +31,16 @@ export default function TypingIndicator() {
     <div className="flex items-start gap-3 mb-4">
 
       {/* Arjun avatar */}
-      <div className="w-8 h-8 rounded-full bg-gradient-to-br
-                      from-saffron-500 to-navy-700 flex items-center
-                      justify-center text-white text-sm font-bold
-                      shrink-0 shadow-sm">
+      <div className="w-8 h-8 rounded-full bg-white border border-[#ebebeb] flex items-center
+                      justify-center text-[#1c1c1c] text-sm font-bold
+                      shrink-0 shadow-sm mb-1">
         A
       </div>
 
       {/* Bubble */}
       <div
         ref={containerRef}
-        className="bg-white border border-gray-100 rounded-2xl
+        className="bg-white border border-[#ebebeb] rounded-2xl
                    rounded-tl-none px-4 py-3 shadow-sm"
       >
         <div className="flex items-center gap-1.5">
@@ -49,7 +48,7 @@ export default function TypingIndicator() {
             <div
               key={i}
               className="typing-dot w-2 h-2 rounded-full
-                         bg-saffron-400"
+                         bg-gray-400"
             />
           ))}
         </div>
