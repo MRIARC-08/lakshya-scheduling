@@ -61,11 +61,11 @@ export default function BookingCard({ booking, index }: Props) {
     <div
       ref={ref}
       className={clsx(
-        'bg-white rounded-3xl border shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] p-6',
-        'hover:shadow-xl transition-all duration-300 group',
+        'bg-white rounded-3xl border shadow-sm p-6',
+        'hover:shadow-md transition-all duration-300 group',
         isPast
           ? 'border-gray-100 opacity-60'
-          : 'border-saffron-100 hover:border-saffron-200 hover:-translate-y-1'
+          : 'border-[#ebebeb] hover:border-[#1c1c1c] hover:-translate-y-1'
       )}
     >
       <div className="flex items-start gap-4">
@@ -75,7 +75,7 @@ export default function BookingCard({ booking, index }: Props) {
           'w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 shadow-sm transition-transform duration-300 group-hover:scale-110',
           isPast
             ? 'bg-gray-100 text-gray-400'
-            : 'bg-gradient-to-br from-saffron-500 to-saffron-600 text-white'
+            : 'bg-[#1c1c1c] text-white'
         )}>
           {icon}
         </div>
@@ -84,7 +84,7 @@ export default function BookingCard({ booking, index }: Props) {
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-2">
             <div>
-              <h3 className="font-semibold text-navy-900 truncate">
+              <h3 className="font-semibold text-[#1c1c1c] truncate">
                 {booking.session_type}
               </h3>
               <p className="text-sm text-gray-500 mt-0.5">
@@ -95,10 +95,10 @@ export default function BookingCard({ booking, index }: Props) {
             {/* Status badges */}
             <div className="flex flex-col items-end gap-1 shrink-0">
               <span className={clsx(
-                'text-xs font-semibold px-2.5 py-1 rounded-full',
+                'text-xs font-semibold px-2.5 py-1 rounded-full border',
                 isPast
-                  ? 'bg-gray-100 text-gray-500'
-                  : 'bg-green-100 text-green-700'
+                  ? 'bg-gray-50 text-gray-500 border-gray-100'
+                  : 'bg-[#1c1c1c] text-white border-[#1c1c1c]'
               )}>
                 {isPast ? 'Completed' : 'Upcoming'}
               </span>
@@ -118,7 +118,7 @@ export default function BookingCard({ booking, index }: Props) {
               REF: {booking.booking_ref}
             </span>
             {booking.google_event_id && (
-              <span className="text-xs text-navy-500 font-medium flex items-center gap-1.5 bg-navy-50 px-2 py-1 rounded-md">
+              <span className="text-xs text-gray-600 font-medium flex items-center gap-1.5 bg-[#fafafa] border border-[#ebebeb] px-2 py-1 rounded-md">
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg> Calendar event created
               </span>
             )}
