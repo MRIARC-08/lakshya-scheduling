@@ -72,9 +72,8 @@ export default function MessageBubble({ message, isLast }: Props) {
     >
       {/* Avatar */}
       {!isUser && (
-        <div className="w-8 h-8 rounded-full bg-gradient-to-br
-                        from-saffron-500 to-navy-700 flex items-center
-                        justify-center text-white text-sm font-bold
+        <div className="w-8 h-8 rounded-full bg-white border border-[#ebebeb] flex items-center
+                        justify-center text-[#1c1c1c] text-sm font-bold
                         shrink-0 shadow-sm mb-1">
           A
         </div>
@@ -91,7 +90,7 @@ export default function MessageBubble({ message, isLast }: Props) {
       )}
 
       {isUser && !session?.user?.image && (
-        <div className="w-8 h-8 rounded-full bg-navy-600
+        <div className="w-8 h-8 rounded-full bg-[#1c1c1c]
                         flex items-center justify-center
                         text-white text-sm font-bold shrink-0 mb-1">
           Y
@@ -113,8 +112,8 @@ export default function MessageBubble({ message, isLast }: Props) {
           className={clsx(
             'px-5 py-3.5 rounded-2xl text-[15px] leading-relaxed overflow-hidden shadow-sm transition-all',
             isUser
-              ? 'bg-gradient-to-br from-saffron-500 to-saffron-600 text-white rounded-br-sm'
-              : 'bg-white text-gray-800 rounded-bl-sm border border-gray-100 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)]'
+              ? 'bg-[#1c1c1c] text-white rounded-br-sm'
+              : 'bg-white text-gray-800 rounded-bl-sm border border-[#ebebeb] shadow-sm'
           )}
         >
           {isUser ? (
@@ -125,7 +124,7 @@ export default function MessageBubble({ message, isLast }: Props) {
               </span>
             ))
           ) : (
-            <div className="prose prose-sm prose-saffron max-w-none">
+            <div className="prose prose-sm prose-gray max-w-none">
               <ReactMarkdown remarkPlugins={[remarkGfm]}>
                 {message.content}
               </ReactMarkdown>

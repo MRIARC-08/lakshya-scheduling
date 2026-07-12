@@ -30,11 +30,11 @@ export default function Navbar() {
 
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3 group">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-navy-800 to-navy-900 flex items-center justify-center shadow-md group-hover:shadow-lg transition-all duration-300 group-hover:-translate-y-0.5">
+          <div className="w-10 h-10 rounded-xl bg-black flex items-center justify-center shadow-md group-hover:shadow-lg transition-all duration-300 group-hover:-translate-y-0.5">
             <span className="text-white font-bold text-lg tracking-tight">LA</span>
           </div>
           <div>
-            <p className="font-bold text-navy-900 leading-none text-[15px] tracking-tight">
+            <p className="font-bold text-gray-900 leading-none text-[15px] tracking-tight">
               Lakshya IAS
             </p>
             <p className="text-[11px] text-gray-500 font-medium tracking-wider uppercase mt-1">
@@ -47,20 +47,20 @@ export default function Navbar() {
         <div className="hidden md:flex items-center gap-8">
           <Link
             href="/chat"
-            className="text-sm text-gray-600 hover:text-navy-900
+            className="text-sm text-gray-600 hover:text-gray-900
                        transition-colors font-medium relative group"
           >
             Book Session
-            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-saffron-500 transition-all duration-300 group-hover:w-full"></span>
+            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-black transition-all duration-300 group-hover:w-full"></span>
           </Link>
           {session && (
             <Link
               href="/bookings"
-              className="text-sm text-gray-600 hover:text-navy-900
+              className="text-sm text-gray-600 hover:text-gray-900
                          transition-colors font-medium relative group"
             >
               My Bookings
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-saffron-500 transition-all duration-300 group-hover:w-full"></span>
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-black transition-all duration-300 group-hover:w-full"></span>
             </Link>
           )}
         </div>
@@ -75,7 +75,7 @@ export default function Navbar() {
                   alt={session.user.name ?? 'User'}
                   width={32}
                   height={32}
-                  className="rounded-full ring-2 ring-saffron-200"
+                  className="rounded-full ring-2 ring-gray-200"
                 />
               )}
               <span className="text-sm text-gray-700 hidden md:block">
@@ -93,8 +93,8 @@ export default function Navbar() {
           ) : (
             <button
               onClick={() => signIn('google')}
-              className="flex items-center gap-2 bg-navy-900
-                         hover:bg-navy-800 text-white text-sm
+              className="flex items-center gap-2 bg-black
+                         hover:bg-gray-800 text-white text-sm
                          font-medium px-5 py-2.5 rounded-full
                          transition-all shadow-md hover:shadow-lg
                          hover:-translate-y-0.5 active:translate-y-0"

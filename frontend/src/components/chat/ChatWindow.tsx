@@ -143,28 +143,27 @@ export default function ChatWindow({ threadId, onNewMessage }: ChatWindowProps) 
   return (
     <div
       ref={containerRef}
-      className="flex flex-col h-full bg-gray-50"
+      className="flex flex-col h-full bg-[#f4f4f4]"
     >
       {/* Header */}
       <div
         ref={headerRef}
-        className="glass-dark
-                   text-white px-4 py-3 flex items-center gap-3
-                   shadow-lg pt-20"
+        className="bg-[#fafafa] border-b border-[#ebebeb]
+                   text-[#1c1c1c] px-4 py-3 flex items-center gap-3
+                   shadow-sm pt-20"
       >
         {/* Arjun avatar */}
-        <div className="w-10 h-10 rounded-full bg-gradient-to-br
-                        from-saffron-400 to-saffron-600 flex items-center
-                        justify-center text-white font-bold text-lg
-                        shadow-md shrink-0">
+        <div className="w-10 h-10 rounded-full bg-white border border-[#ebebeb]
+                        flex items-center justify-center text-[#1c1c1c] font-bold text-lg
+                        shadow-sm shrink-0">
           A
         </div>
 
         <div className="flex-1">
           <div className="flex items-center gap-2">
             <h2 className="font-semibold text-sm">Arjun</h2>
-            <span className="bg-saffron-500/20 border border-saffron-500/30
-                             text-saffron-300 text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full font-bold">
+            <span className="bg-white border border-[#ebebeb]
+                             text-gray-500 text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full font-bold shadow-sm">
               Scheduling Assistant
             </span>
           </div>
@@ -223,8 +222,8 @@ export default function ChatWindow({ threadId, onNewMessage }: ChatWindowProps) 
               key={reply}
               onClick={() => sendMessage(reply)}
               className="text-xs bg-white border border-gray-200
-                         text-gray-600 hover:border-saffron-300
-                         hover:text-saffron-600 px-3 py-1.5 rounded-full
+                         text-gray-600 hover:border-[#1c1c1c] hover:bg-[#1c1c1c]
+                         hover:text-white px-3 py-1.5 rounded-full
                          transition-all shadow-sm"
             >
               {reply}
@@ -243,11 +242,11 @@ export default function ChatWindow({ threadId, onNewMessage }: ChatWindowProps) 
             onKeyDown={handleKeyDown}
             placeholder="Type your message... (Enter to send)"
             rows={1}
-            className="flex-1 resize-none bg-gray-50/50 border border-gray-200
+            className="flex-1 resize-none bg-white border border-[#ebebeb]
                        rounded-2xl px-4 py-3.5 text-sm text-gray-800
                        placeholder-gray-400 focus:outline-none
-                       focus:ring-4 focus:ring-saffron-500/20
-                       focus:border-saffron-400 transition-all duration-300
+                       focus:ring-4 focus:ring-[#1c1c1c]/10
+                       focus:border-[#1c1c1c] transition-all duration-300
                        max-h-32 leading-relaxed shadow-inner"
             style={{
               height: 'auto',
@@ -261,7 +260,7 @@ export default function ChatWindow({ threadId, onNewMessage }: ChatWindowProps) 
               'w-11 h-11 rounded-full flex items-center justify-center',
               'transition-all shrink-0',
               input.trim() && !isTyping
-                ? 'bg-saffron-500 hover:bg-saffron-600 text-white shadow-md hover:scale-105 active:scale-95'
+                ? 'bg-[#1c1c1c] hover:bg-[#2a2a2a] text-white shadow-md hover:scale-105 active:scale-95'
                 : 'bg-gray-100 text-gray-400 cursor-not-allowed'
             )}
           >

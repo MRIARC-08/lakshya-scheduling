@@ -75,7 +75,7 @@ export default function ChatPage() {
                 createNewSession()
                 setIsSidebarOpen(false)
               }}
-              className="w-full bg-saffron-50 text-saffron-600 hover:bg-saffron-100 border border-saffron-200 font-medium py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-sm active:scale-95"
+              className="w-full bg-white text-gray-800 hover:bg-gray-50 border border-gray-200 font-medium py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-sm active:scale-95"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -99,7 +99,7 @@ export default function ChatPage() {
                 className={clsx(
                   "w-full text-left px-3 py-2.5 rounded-lg text-sm transition-all truncate border",
                   activeSessionId === s.id 
-                    ? "bg-saffron-50 text-saffron-700 border-saffron-200 font-medium shadow-sm" 
+                    ? "bg-gray-100 text-gray-900 border-gray-300 font-medium shadow-sm" 
                     : "text-gray-600 border-transparent hover:bg-gray-50 hover:text-gray-900"
                 )}
               >
@@ -114,7 +114,7 @@ export default function ChatPage() {
           {/* Mobile Sidebar Toggle Button */}
           <button 
             onClick={() => setIsSidebarOpen(true)}
-            className="md:hidden absolute top-[5.5rem] left-4 z-30 p-2 bg-white/90 backdrop-blur-md rounded-lg shadow-md border border-gray-100 text-gray-600 hover:text-saffron-600"
+            className="md:hidden absolute top-[5.5rem] left-4 z-30 p-2 bg-white/90 backdrop-blur-md rounded-lg shadow-md border border-gray-100 text-gray-600 hover:text-black"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
