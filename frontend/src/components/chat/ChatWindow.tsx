@@ -42,6 +42,8 @@ export default function ChatWindow({ threadId, onNewMessage }: ChatWindowProps) 
 
   // Fetch history when threadId changes
   useEffect(() => {
+    let ignore = false
+
     async function fetchHistory() {
       setIsLoadingHistory(true)
       setMessages([WELCOME_MESSAGE])
@@ -49,7 +51,7 @@ export default function ChatWindow({ threadId, onNewMessage }: ChatWindowProps) 
       try {
         const res = await fetch(`/api/chat/history?threadId=${threadId}`)
         const data = await res.json()
-        if (data.success && data.messages && data.messages.length > 0) {
+        if (!ignore && data.success && data.messages && data.messages.length > 0) {
           const historyMessages = data.messages.map((m: { timestamp: string | number | Date }) => ({
             ...m,
             timestamp: new Date(m.timestamp)
@@ -57,13 +59,21 @@ export default function ChatWindow({ threadId, onNewMessage }: ChatWindowProps) 
           setMessages(historyMessages)
         }
       } catch (err) {
-        console.error('Failed to load history:', err)
+        if (!ignore) {
+          console.error('Failed to load history:', err)
+        }
       } finally {
-        setIsLoadingHistory(false)
+        if (!ignore) {
+          setIsLoadingHistory(false)
+        }
       }
     }
     
     fetchHistory()
+
+    return () => {
+      ignore = true
+    }
   }, [threadId])
 
   // Auto-scroll to bottom
