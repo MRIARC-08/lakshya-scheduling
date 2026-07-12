@@ -8,27 +8,46 @@ The frontend is built as a Single Page Application (SPA) using the Next.js App R
 
 ```mermaid
 graph TD
+    %% User and UI Layer
     User([User])
     
-    subgraph Frontend [Next.js Web App]
-        UI[React Components<br/>Tailwind + GSAP]
-        Auth[NextAuth.js<br/>Session Management]
-        LocalDB[(Local Storage<br/>Chat Sessions)]
+    subgraph BrowserEnvironment [Browser Environment]
+        subgraph ReactApp [React Application]
+            Hero[Landing Page Components]
+            ChatUI[Chat Interface UI]
+            Dash[Dashboard UI]
+        end
+        
+        subgraph StateManagement [State & Storage]
+            SessionAuth[NextAuth Session State]
+            ChatHook[useChatSessions Hook]
+            LocalStorage[(Browser Local Storage<br/>Thread UUIDs)]
+        end
+    end
+    
+    subgraph NextServer [Next.js Node Server]
+        AuthRoute[Auth Callbacks]
         APIRoutes[Next.js API Routes<br/>/api/chat]
     end
     
-    subgraph Backend [Python Agent API]
+    subgraph ExternalBackend [Python Agent Backend]
         AgentChat[/chat endpoint/]
         AgentHistory[/history endpoint/]
     end
     
-    User <-->|Interacts| UI
-    UI <-->|Session State| Auth
-    UI <-->|Manages Threads| LocalDB
-    UI <-->|Sends Messages| APIRoutes
+    User <-->|Interacts| Hero
+    User <-->|Types Messages| ChatUI
+    User <-->|Views Bookings| Dash
     
-    APIRoutes -->|Proxy Requests| AgentChat
-    APIRoutes -->|Fetch History| AgentHistory
+    ChatUI <-->|Reads/Writes Messages| ChatHook
+    Dash <-->|Validates Access| SessionAuth
+    
+    ChatHook <-->|Persists Thread IDs| LocalStorage
+    ChatHook <-->|POST Message / GET History| APIRoutes
+    SessionAuth <-->|OAuth Flow| AuthRoute
+    
+    APIRoutes -->|Proxy POST| AgentChat
+    APIRoutes -->|Proxy GET| AgentHistory
 ```
 
 ## Key Components

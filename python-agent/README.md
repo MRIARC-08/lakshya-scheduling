@@ -8,35 +8,51 @@ The agent utilizes LangGraph to create a deterministic, state-driven execution f
 
 ```mermaid
 graph TD
-    API([FastAPI Endpoint])
+    %% Entry points
+    API([FastAPI REST Endpoint<br/>/chat, /chat/history])
     
-    subgraph LangGraph [LangGraph State Machine]
-        State[(Scheduling State)]
+    subgraph LangGraphEngine [LangGraph State Machine Engine]
+        State[(SchedulingState TypedDict<br/>Manages Context & Variables)]
         
         Router{Triage Router}
-        TriageNode[Triage Agent<br/>General Queries]
-        BookingNode[Booking Specialist<br/>Scheduling Workflow]
         
-        CheckAvailability[[Tool: check_availability]]
-        ReserveSlot[[Tool: reserve_slot]]
-        SendEmail[[Tool: send_email]]
+        subgraph Agents [AI Agents]
+            TriageNode[Triage Agent Node<br/>System Prompt: Categorization]
+            BookingNode[Booking Specialist Node<br/>System Prompt: Slot Booking]
+        end
+        
+        subgraph Tools [External Tools API]
+            CheckAvailability[[Tool: check_availability<br/>Hits Corsair /calendar]]
+            ReserveSlot[[Tool: reserve_slot<br/>Hits Corsair /calendar/event]]
+            SendEmail[[Tool: send_email<br/>Hits Corsair /email]]
+        end
     end
     
-    subgraph Checkpoints [Persistence]
-        PG[(PostgreSQL<br/>Thread History)]
+    subgraph Persistence [Neon Database Persistence]
+        PG_Threads[(Checkpoints Table<br/>stores thread history)]
+        PG_Bookings[(Bookings Table<br/>stores confirmed appointments)]
     end
     
-    API -->|Inject Message| State
+    subgraph LLMRouting [LLM Provider Routing]
+        PrimaryLLM[Cerebras gpt-oss-120b<br/>Primary Fast Inference]
+        FallbackLLM[Groq Llama 3 / Mixtral<br/>Fallback for Rate Limits]
+    end
+    
+    API -->|Inject HumanMessage| State
     State --> Router
     
-    Router -->|General| TriageNode
-    Router -->|Booking Intent| BookingNode
+    Router -->|Intent = General| TriageNode
+    Router -->|Intent = Book/Reschedule| BookingNode
     
-    BookingNode <-->|Queries| CheckAvailability
-    BookingNode <-->|Mutates| ReserveSlot
-    BookingNode <-->|Notifies| SendEmail
+    TriageNode <-->|Queries for Generation| PrimaryLLM
+    BookingNode <-->|Queries for Tool Call/Generation| PrimaryLLM
+    PrimaryLLM -.->|429 Rate Limit| FallbackLLM
     
-    LangGraph <-->|Saves/Loads Thread| PG
+    BookingNode <-->|Calls if tool_calls outputted| Tools
+    Tools -.->|Returns JSON Status| BookingNode
+    
+    Tools -->|Updates| PG_Bookings
+    LangGraphEngine <-->|Auto-saves State| PG_Threads
 ```
 
 ## Key Components

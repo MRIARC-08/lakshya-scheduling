@@ -15,37 +15,62 @@ The platform is divided into three distinct services working in tandem:
 ```mermaid
 graph TD
     %% User and UI Layer
-    User((User / Aspirant))
-    Frontend[Frontend<br/>Next.js + TailwindCSS]
+    subgraph Client [Client Side]
+        User((User / Aspirant))
+        Browser[Web Browser]
+        User -->|Interacts with UI| Browser
+    end
+    
+    subgraph FrontendApp [Frontend Next.js Application]
+        NextUI[React Components<br/>TailwindCSS, GSAP]
+        ChatHook[useChatSessions Hook]
+        NextAPI[Next.js API Route<br/>/api/chat]
+        NextAuth[NextAuth.js<br/>Google OAuth]
+        
+        Browser <-->|HTTP Requests| NextUI
+        NextUI <-->|State Mgmt| ChatHook
+        ChatHook <-->|POST JSON| NextAPI
+    end
     
     %% API and Agent Layer
-    AgentAPI[AI Agent API<br/>FastAPI]
-    LangGraph[LangGraph Engine<br/>Multi-Agent System]
-    AgentDB[(Agent Checkpoints<br/>PostgreSQL)]
+    subgraph AIAgent [Python AI Agent Service]
+        FastAPI[FastAPI Server]
+        LangGraph[LangGraph Engine]
+        State[(Agent Checkpoints<br/>PostgreSQL Neon)]
+        
+        Triage[Triage Agent]
+        Booking[Booking Specialist]
+        
+        NextAPI <-->|REST API| FastAPI
+        FastAPI <-->|State Updates| LangGraph
+        LangGraph <-->|State Persistence| State
+        
+        LangGraph -->|Routes to| Triage
+        LangGraph -->|Routes to| Booking
+    end
     
     %% Integration Layer
-    Corsair[Corsair Bridge<br/>Express.js]
-    CorsairDB[(Corsair Internal<br/>PostgreSQL)]
+    subgraph Integration [Corsair Bridge Service]
+        Express[Express.js Server]
+        CorsairSDK[Corsair SDK Core]
+        CorsairDB[(OAuth Tokens<br/>PostgreSQL Local)]
+        
+        Booking -->|Tool: check_availability| Express
+        Booking -->|Tool: reserve_slot| Express
+        Booking -->|Tool: send_email| Express
+        
+        Express <-->|Manage Auth| CorsairSDK
+        CorsairSDK <-->|Read/Write Tokens| CorsairDB
+    end
     
     %% External Services
-    GCal[Google Calendar API]
-    Gmail[Gmail API]
-    
-    %% Connections
-    User -->|Visits Website & Chats| Frontend
-    Frontend <-->|REST API Calls| AgentAPI
-    AgentAPI <-->|Manages State| LangGraph
-    LangGraph <-->|State Persistence| AgentDB
-    
-    %% Tool execution flow
-    LangGraph -->|Tool: check_availability| Corsair
-    LangGraph -->|Tool: reserve_slot| Corsair
-    LangGraph -->|Tool: send_email| Corsair
-    
-    %% Bridge to Google
-    Corsair -->|OAuth2| CorsairDB
-    Corsair -->|Fetch/Create Events| GCal
-    Corsair -->|Send Confirmation| Gmail
+    subgraph External [Google Workspace APIs]
+        GCal[Google Calendar API]
+        Gmail[Gmail API]
+        
+        CorsairSDK <-->|Fetch/Create Events| GCal
+        CorsairSDK <-->|Send MIME Emails| Gmail
+    end
 ```
 
 ## Service Overview

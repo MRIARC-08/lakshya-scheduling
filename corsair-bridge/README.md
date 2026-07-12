@@ -8,40 +8,54 @@ The Python agent lacks direct access to the user's Google Workspace. Instead, it
 
 ```mermaid
 graph TD
-    subgraph Python Agent
+    %% Python Agent Caller
+    subgraph PythonAgent [Python AI Agent API]
         CheckAvail["check_availability()"]
         ReserveSlot["reserve_slot()"]
         SendEmail["send_email()"]
     end
     
-    subgraph Corsair Bridge [Express.js Server]
+    %% Express Server & Corsair SDK
+    subgraph CorsairBridge [Corsair Bridge Service (Express.js)]
         Router[API Router]
         
-        CalRoute[Calendar Routes<br/>/api/calendar]
-        EmailRoute[Email Routes<br/>/api/email]
+        subgraph Routes [Express Routes]
+            CalRoute[Calendar Routes<br/>/api/calendar]
+            EmailRoute[Email Routes<br/>/api/email]
+        end
         
-        CorsairCore[Corsair Core SDK]
-        PG[(Local PostgreSQL<br/>OAuth Tokens)]
+        subgraph Core [Corsair Core Integration]
+            CorsairSDK[Corsair SDK Context]
+            GCalPlugin[@corsair-dev/googlecalendar<br/>Zod Validated]
+            GmailPlugin[@corsair-dev/gmail<br/>Zod Validated]
+        end
+        
+        %% DB
+        PG[(Local PostgreSQL<br/>Stores OAuth Refresh Tokens<br/>for lakshyaias.in)]
     end
     
-    subgraph Google Workspace
-        GCalAPI[Google Calendar API]
-        GmailAPI[Gmail API]
+    %% Google Cloud APIs
+    subgraph GoogleWorkspace [Google Workspace Cloud]
+        GCalAPI[Google Calendar API<br/>Events & Meet Links]
+        GmailAPI[Gmail API<br/>MIME Message Sending]
     end
     
+    %% Network Flow
     CheckAvail -->|GET /api/calendar/availability| Router
     ReserveSlot -->|POST /api/calendar/event| Router
     SendEmail -->|POST /api/email/send| Router
     
-    Router --> CalRoute
-    Router --> EmailRoute
+    Router --> Routes
+    CalRoute <-->|Request execution| GCalPlugin
+    EmailRoute <-->|Request execution| GmailPlugin
     
-    CalRoute <-->|Fetch Tokens| CorsairCore
-    EmailRoute <-->|Fetch Tokens| CorsairCore
-    CorsairCore <--> PG
+    GCalPlugin <--> CorsairSDK
+    GmailPlugin <--> CorsairSDK
     
-    CalRoute <-->|Google SDK| GCalAPI
-    EmailRoute <-->|Google SDK| GmailAPI
+    CorsairSDK <-->|Refresh Tokens automatically| PG
+    
+    GCalPlugin <-->|Authenticated API Calls| GCalAPI
+    GmailPlugin <-->|Authenticated API Calls| GmailAPI
 ```
 
 ## Key Components
