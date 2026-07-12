@@ -19,7 +19,10 @@ export function useChatSessions() {
     try {
       const stored = localStorage.getItem(STORAGE_KEY)
       if (stored) {
-        const parsed = JSON.parse(stored) as ChatSession[]
+        let parsed = JSON.parse(stored) as ChatSession[]
+        // Clean out empty sessions that were abandoned
+        parsed = parsed.filter(s => s.title !== 'New Chat')
+        
         // eslint-disable-next-line
         setSessions(parsed)
         if (parsed.length > 0) {
@@ -36,7 +39,9 @@ export function useChatSessions() {
   // Save to local storage on changes
   useEffect(() => {
     if (!isLoaded) return
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(sessions))
+    // Don't save empty/abandoned new chats to the local DB
+    const validSessions = sessions.filter(s => s.title !== 'New Chat')
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(validSessions))
   }, [sessions, isLoaded])
 
   const createNewSession = useCallback(() => {
