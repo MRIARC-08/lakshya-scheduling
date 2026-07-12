@@ -221,7 +221,7 @@ This session was booked via the Lakshya scheduling assistant (Arjun).
         await new Promise(resolve => setTimeout(resolve, 1500))
         const fetched = await corsair.googlecalendar.api.events.get({
           calendarId,
-          eventId: finalEvent.id!,
+          id: finalEvent.id!,
         })
         if (fetched.hangoutLink) {
           finalEvent = fetched
