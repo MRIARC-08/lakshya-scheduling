@@ -1,36 +1,64 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Lakshya Frontend Web App
+
+This directory contains the user-facing Next.js application for the Lakshya Scheduling Platform. It provides a polished, interactive chat interface where users can talk to "Arjun" (the AI assistant), as well as a dashboard to view their booked mentorship sessions.
+
+## Architecture & Data Flow
+
+The frontend is built as a Single Page Application (SPA) using the Next.js App Router. It is responsible for maintaining the user's conversational state, handling UI animations, and communicating securely with the AI agent.
+
+```mermaid
+graph TD
+    User([User])
+    
+    subgraph Frontend [Next.js Web App]
+        UI[React Components<br/>Tailwind + GSAP]
+        Auth[NextAuth.js<br/>Session Management]
+        LocalDB[(Local Storage<br/>Chat Sessions)]
+        APIRoutes[Next.js API Routes<br/>/api/chat]
+    end
+    
+    subgraph Backend [Python Agent API]
+        AgentChat[/chat endpoint/]
+        AgentHistory[/history endpoint/]
+    end
+    
+    User <-->|Interacts| UI
+    UI <-->|Session State| Auth
+    UI <-->|Manages Threads| LocalDB
+    UI <-->|Sends Messages| APIRoutes
+    
+    APIRoutes -->|Proxy Requests| AgentChat
+    APIRoutes -->|Fetch History| AgentHistory
+```
+
+## Key Components
+
+- **`Hero.tsx` & `SessionTypes.tsx`**: Landing page components featuring GSAP animations and a minimalist monochrome aesthetic.
+- **`ChatWindow.tsx` & `MessageBubble.tsx`**: The core conversational interface. Handles optimistic message updates, typing indicators, and parses Markdown from the AI responses.
+- **`useChatSessions.ts`**: A custom React hook that manages chat threads using browser local storage, explicitly preventing the storage of abandoned, empty chat threads.
+- **Next.js API Routes (`/api/chat/route.ts`)**: Acts as a proxy to the Python backend to prevent exposing the agent's internal URL to the public browser, whilst also handling error states (e.g., rate limiting).
+
+## Theming & Styling
+
+The application adheres to a strict "Corsair Monochrome" design system:
+- **Colors**: Primarily `#1c1c1c` (Black/Dark Gray), `#f4f4f4` (Light Gray), `#fafafa` (Off-white), and `#ebebeb` (Borders).
+- **Typography**: Inter font with tight tracking for headings.
+- **Animations**: Subtle, hardware-accelerated animations using GSAP (GreenSock) for entrance, hover states, and smooth scrolling.
 
 ## Getting Started
 
-First, run the development server:
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+2. Set up environment variables (`.env.local`):
+   ```
+   NEXT_PUBLIC_API_URL=http://localhost:8000
+   NEXTAUTH_SECRET=your_secret
+   ```
+3. Run the development server:
+   ```bash
+   npm run dev
+   ```
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The application will be available at `http://localhost:3000`.
