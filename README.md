@@ -1,103 +1,101 @@
-# Lakshya Scheduling Platform
+<div align="center">
+  <h1>🏛️ Lakshya Scheduling Platform</h1>
+  <p><em>An AI-powered, multi-agent mentorship booking system for civil service aspirants.</em></p>
+  
+  [![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=white)](#)
+  [![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)](#)
+  [![LangGraph](https://img.shields.io/badge/LangGraph-1C1C1C?style=for-the-badge&logo=langchain&logoColor=white)](#)
+  [![Express.js](https://img.shields.io/badge/Express.js-404D59?style=for-the-badge&logo=express&logoColor=white)](#)
+</div>
 
-Lakshya Scheduling Platform is an AI-powered mentorship booking system designed for Lakshya IAS Academy. It leverages a modern microservices architecture to provide aspirants with a seamless experience when booking counseling sessions, mock interviews, and mentorship calls via an intelligent conversational agent.
+---
 
-## System Architecture
+## 📐 System Architecture
 
-The platform is divided into three distinct services working in tandem:
+The platform is divided into three distinct services working in perfect synchronization:
 
-1. **Frontend (`/frontend`)**: A Next.js web application providing the user interface, chat experience, and dashboard.
-2. **AI Agent (`/python-agent`)**: A Python-based LangGraph multi-agent system exposing an API to handle intent classification, slot availability checking, and booking operations.
-3. **Corsair Bridge (`/corsair-bridge`)**: An Express.js microservice utilizing the Corsair framework to safely connect with Google Workspace APIs (Calendar & Gmail) for finalizing bookings and sending confirmations.
+1. **Frontend (`/frontend`)**: A Next.js SPA providing a sharp, monochrome user interface and chat experience.
+2. **AI Agent (`/python-agent`)**: A LangGraph multi-agent orchestration layer that handles complex reasoning and API routing.
+3. **Corsair Bridge (`/corsair-bridge`)**: An Express.js microservice executing secure Google Workspace integrations.
 
-### Global Architecture Diagram
+### Global Data Flow
 
 ```mermaid
 graph TD
+    %% Styling for a sleek, sharp aesthetic
+    classDef default fill:transparent,stroke:#888,stroke-width:1px,color:inherit,rx:0,ry:0;
+    classDef client fill:#f4f4f4,stroke:#000,stroke-width:1.5px,color:#000,rx:0,ry:0;
+    classDef agent fill:#000,stroke:#fff,stroke-width:1.5px,color:#fff,rx:0,ry:0;
+    classDef bridge fill:#333,stroke:#ccc,stroke-width:1px,color:#fff,rx:0,ry:0;
+    classDef external fill:transparent,stroke:#666,stroke-width:1px,stroke-dasharray: 4 4,rx:0,ry:0;
+
     %% User and UI Layer
     subgraph Client [Client Side]
-        User((User / Aspirant))
-        Browser[Web Browser]
-        User -->|Interacts with UI| Browser
+        User((User)):::client
+        Browser[Web Browser]:::client
+        User --> Browser
     end
     
-    subgraph FrontendApp [Frontend Next.js Application]
-        NextUI[React Components<br/>TailwindCSS, GSAP]
-        ChatHook[useChatSessions Hook]
-        NextAPI[Next.js API Route<br/>/api/chat]
-        NextAuth[NextAuth.js<br/>Google OAuth]
+    subgraph FrontendApp [Frontend App]
+        NextUI[React Components]:::default
+        ChatHook[useChatSessions]:::default
+        NextAPI[/api/chat]:::default
         
-        Browser <-->|HTTP Requests| NextUI
-        NextUI <-->|State Mgmt| ChatHook
-        ChatHook <-->|POST JSON| NextAPI
+        Browser <--> NextUI
+        NextUI <--> ChatHook
+        ChatHook <--> NextAPI
     end
     
     %% API and Agent Layer
-    subgraph AIAgent [Python AI Agent Service]
-        FastAPI[FastAPI Server]
-        LangGraph[LangGraph Engine]
-        State[(Agent Checkpoints<br/>PostgreSQL Neon)]
+    subgraph AIAgent [Python AI Service]
+        FastAPI[FastAPI Server]:::agent
+        LangGraph[LangGraph Engine]:::agent
+        State[(Agent DB)]:::agent
         
-        Triage[Triage Agent]
-        Booking[Booking Specialist]
-        
-        NextAPI <-->|REST API| FastAPI
-        FastAPI <-->|State Updates| LangGraph
-        LangGraph <-->|State Persistence| State
-        
-        LangGraph -->|Routes to| Triage
-        LangGraph -->|Routes to| Booking
+        NextAPI <--> FastAPI
+        FastAPI <--> LangGraph
+        LangGraph <--> State
     end
     
     %% Integration Layer
     subgraph Integration [Corsair Bridge Service]
-        Express[Express.js Server]
-        CorsairSDK[Corsair SDK Core]
-        CorsairDB[(OAuth Tokens<br/>PostgreSQL Local)]
+        Express[Express.js Server]:::bridge
+        CorsairSDK[Corsair Core]:::bridge
+        CorsairDB[(OAuth DB)]:::bridge
         
-        Booking -->|Tool: check_availability| Express
-        Booking -->|Tool: reserve_slot| Express
-        Booking -->|Tool: send_email| Express
-        
-        Express <-->|Manage Auth| CorsairSDK
-        CorsairSDK <-->|Read/Write Tokens| CorsairDB
+        LangGraph -->|Tool Calling| Express
+        Express <--> CorsairSDK
+        CorsairSDK <--> CorsairDB
     end
     
     %% External Services
-    subgraph External [Google Workspace APIs]
-        GCal[Google Calendar API]
-        Gmail[Gmail API]
+    subgraph External [Google Workspace]
+        GCal[Google Calendar]:::external
+        Gmail[Gmail]:::external
         
-        CorsairSDK <-->|Fetch/Create Events| GCal
-        CorsairSDK <-->|Send MIME Emails| Gmail
+        CorsairSDK <--> GCal
+        CorsairSDK <--> Gmail
     end
 ```
 
-## Service Overview
+## 🏗️ Service Overview
 
 ### 1. Frontend Web App
-Located in `/frontend`. This is the user-facing application built with Next.js App Router and TailwindCSS. It provides the landing page, the conversational chat UI, and the user's booking dashboard.
-* **Tech Stack**: Next.js 14, React, TailwindCSS, GSAP (for animations), NextAuth.js.
-* [Read more in frontend/README.md](./frontend/README.md)
+Located in `/frontend`. A stunning, high-performance UI built with Next.js App Router.
+* **Stack**: Next.js 14, React, TailwindCSS, GSAP, NextAuth.js.
+* [Explore Frontend Docs](./frontend/README.md)
 
 ### 2. Python AI Agent
-Located in `/python-agent`. This service powers the intelligent assistant named "Arjun". It uses LangGraph to orchestrate multiple AI agents (e.g., Triage Agent, Booking Specialist) that process user requests, extract intents, and call external tools to fulfill bookings.
-* **Tech Stack**: FastAPI, LangChain, LangGraph, PostgreSQL (Checkpoints), OpenAI / Cerebras.
-* [Read more in python-agent/README.md](./python-agent/README.md)
+Located in `/python-agent`. The cognitive core ("Arjun") utilizing a multi-agent state machine.
+* **Stack**: FastAPI, LangChain, LangGraph, PostgreSQL, Cerebras Llama 3.
+* [Explore Agent Docs](./python-agent/README.md)
 
 ### 3. Corsair Bridge
-Located in `/corsair-bridge`. This service acts as the secure middleman between the AI agent and third-party APIs like Google Calendar and Gmail. It abstracts the complexity of OAuth flows and API integrations into simple REST endpoints that the Python agent can invoke as tools.
-* **Tech Stack**: Express.js, TypeScript, Corsair SDK, Zod, PostgreSQL.
-* [Read more in corsair-bridge/README.md](./corsair-bridge/README.md)
-
-## Data Flow & Lifecycle
-
-1. **Initiation**: The user starts a chat on the frontend. The chat UI sends the user's messages to the Next.js API route (`/api/chat`), which proxies them to the Python Agent's `/chat` endpoint.
-2. **Triage**: In LangGraph, the *Triage Agent* classifies the user's intent. If it's a general query, it handles it. If the user wants to book a session, it routes to the *Booking Specialist*.
-3. **Execution**: The *Booking Specialist* collects necessary info (Date, Time, Email) and uses tools to invoke the Corsair Bridge.
-4. **Integration**: The Corsair Bridge safely executes actions on Google Calendar and sends MIME-formatted emails via Gmail, returning success status to the Agent.
-5. **Confirmation**: The Agent informs the user that the session is booked, and the Frontend updates its UI to show a "Confirmed" status.
+Located in `/corsair-bridge`. The secure execution environment for Google Workspace integration.
+* **Stack**: Express.js, TypeScript, Corsair SDK, Zod, PostgreSQL.
+* [Explore Bridge Docs](./corsair-bridge/README.md)
 
 ---
-
-*Designed for seamless scale and reliability using agentic workflows.*
+<div align="center">
+  <p><em>Engineered for seamless scale, absolute reliability, and a premium user experience.</em></p>
+</div>

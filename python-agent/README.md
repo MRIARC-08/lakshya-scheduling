@@ -1,61 +1,74 @@
-# Python AI Agent (Arjun)
+<div align="center">
+  <h1>🧠 Lakshya Python Agent</h1>
+  <p><em>The cognitive LangGraph engine orchestrating bookings and user triage.</em></p>
+  
+  [![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)](#)
+  [![LangGraph](https://img.shields.io/badge/LangGraph-1C1C1C?style=for-the-badge&logo=langchain&logoColor=white)](#)
+  [![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](#)
+</div>
 
-This directory houses the backend intelligence of the Lakshya Scheduling Platform. It exposes a FastAPI service that orchestrates a LangGraph multi-agent system to understand user intents, check calendar availability, book sessions, and trigger email confirmations.
+---
 
-## Architecture & Data Flow
+## 📐 Architecture & Data Flow
 
 The agent utilizes LangGraph to create a deterministic, state-driven execution flow. Instead of a single LLM trying to do everything, tasks are delegated to specialized agents (nodes) which can use external tools.
 
 ```mermaid
 graph TD
+    %% Styling for a sleek, sharp aesthetic
+    classDef default fill:transparent,stroke:#888,stroke-width:1px,color:inherit,rx:0,ry:0;
+    classDef endpoint fill:#f4f4f4,stroke:#000,stroke-width:1.5px,color:#000,rx:0,ry:0;
+    classDef agent fill:#000,stroke:#fff,stroke-width:1.5px,color:#fff,rx:0,ry:0;
+    classDef db fill:#333,stroke:#ccc,stroke-width:1px,color:#fff,rx:0,ry:0;
+    classDef llm fill:transparent,stroke:#666,stroke-width:1px,stroke-dasharray: 4 4,rx:0,ry:0;
+
     %% Entry points
-    API([FastAPI REST Endpoint<br/>/chat, /chat/history])
+    API([FastAPI REST /chat]):::endpoint
     
     subgraph LangGraphEngine [LangGraph State Machine Engine]
-        State[(SchedulingState TypedDict<br/>Manages Context & Variables)]
-        
-        Router{Triage Router}
+        State[(SchedulingState)]:::default
+        Router{Triage Router}:::default
         
         subgraph Agents [AI Agents]
-            TriageNode[Triage Agent Node<br/>System Prompt: Categorization]
-            BookingNode[Booking Specialist Node<br/>System Prompt: Slot Booking]
+            TriageNode[Triage Agent]:::agent
+            BookingNode[Booking Specialist]:::agent
         end
         
         subgraph Tools [External Tools API]
-            CheckAvailability[[Tool: check_availability<br/>Hits Corsair /calendar]]
-            ReserveSlot[[Tool: reserve_slot<br/>Hits Corsair /calendar/event]]
-            SendEmail[[Tool: send_email<br/>Hits Corsair /email]]
+            CheckAvailability[[Tool: availability]]:::default
+            ReserveSlot[[Tool: reserve_slot]]:::default
+            SendEmail[[Tool: send_email]]:::default
         end
     end
     
-    subgraph Persistence [Neon Database Persistence]
-        PG_Threads[(Checkpoints Table<br/>stores thread history)]
-        PG_Bookings[(Bookings Table<br/>stores confirmed appointments)]
+    subgraph Persistence [Neon Persistence]
+        PG_Threads[(Checkpoints DB)]:::db
+        PG_Bookings[(Bookings DB)]:::db
     end
     
     subgraph LLMRouting [LLM Provider Routing]
-        PrimaryLLM[Cerebras gpt-oss-120b<br/>Primary Fast Inference]
-        FallbackLLM[Groq Llama 3 / Mixtral<br/>Fallback for Rate Limits]
+        PrimaryLLM[Cerebras gpt-oss-120b]:::llm
+        FallbackLLM[Groq Llama 3]:::llm
     end
     
-    API -->|Inject HumanMessage| State
+    API --> State
     State --> Router
     
     Router -->|Intent = General| TriageNode
-    Router -->|Intent = Book/Reschedule| BookingNode
+    Router -->|Intent = Booking| BookingNode
     
-    TriageNode <-->|Queries for Generation| PrimaryLLM
-    BookingNode <-->|Queries for Tool Call/Generation| PrimaryLLM
+    TriageNode <--> PrimaryLLM
+    BookingNode <--> PrimaryLLM
     PrimaryLLM -.->|429 Rate Limit| FallbackLLM
     
-    BookingNode <-->|Calls if tool_calls outputted| Tools
-    Tools -.->|Returns JSON Status| BookingNode
+    BookingNode <--> Tools
+    Tools -.-> BookingNode
     
-    Tools -->|Updates| PG_Bookings
-    LangGraphEngine <-->|Auto-saves State| PG_Threads
+    Tools --> PG_Bookings
+    LangGraphEngine <--> PG_Threads
 ```
 
-## Key Components
+## 🛠️ Key Components
 
 - **`main.py`**: The entry point. Sets up the FastAPI server, defines API routes (`/chat`, `/chat/history`), and initializes the graph.
 - **`agents/graph.py`**: The LangGraph definition. Wires up the Triage Agent, Booking Specialist, and the Conditional Router. Initializes the PostgreSQL checkpointer.
@@ -63,7 +76,7 @@ graph TD
 - **`agents/booking_specialist.py`**: A specialized agent with access to tools. Guides the user through collecting their name, email, preferred session type, and date/time.
 - **`tools/*.py`**: Functions bound to the Booking Specialist that make HTTP requests to the `corsair-bridge` to perform real-world actions.
 
-## LLM Strategy & Fallbacks
+## 🤖 LLM Strategy & Fallbacks
 
 The system implements a robust LLM routing strategy to handle rate limits and API failures:
 - **Primary Model**: Cerebras-hosted Llama models for ultra-fast, low-latency inference.
