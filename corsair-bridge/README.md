@@ -30,46 +30,46 @@ graph TD
     end
     
     %% Express Server & Corsair SDK
-    subgraph CorsairBridge [Corsair Bridge Service]
+    subgraph CorsairBridge [Corsair Bridge Service (Express.js)]
         Router["API Router"]:::bridge
         
         subgraph Routes [Express Routes]
-            CalRoute["Calendar Routes"]:::default
-            EmailRoute["Email Routes"]:::default
+            CalRoute["Calendar Routes<br/>/api/calendar"]:::default
+            EmailRoute["Email Routes<br/>/api/email"]:::default
         end
         
         subgraph Core [Corsair Core Integration]
             CorsairSDK["Corsair SDK Context"]:::bridge
-            GCalPlugin["@googlecalendar"]:::default
-            GmailPlugin["@gmail"]:::default
+            GCalPlugin["@corsair-dev/googlecalendar<br/>Zod Validated"]:::default
+            GmailPlugin["@corsair-dev/gmail<br/>Zod Validated"]:::default
         end
         
         %% DB
-        PG[("OAuth Tokens DB")]:::db
+        PG[("Local PostgreSQL<br/>Stores OAuth Refresh Tokens<br/>for lakshyaias.in")]:::db
     end
     
     %% Google Cloud APIs
     subgraph GoogleWorkspace [Google Workspace Cloud]
-        GCalAPI["Google Calendar API"]:::api
-        GmailAPI["Gmail API"]:::api
+        GCalAPI["Google Calendar API<br/>Events & Meet Links"]:::api
+        GmailAPI["Gmail API<br/>MIME Message Sending"]:::api
     end
     
     %% Network Flow
-    CheckAvail --> Router
-    ReserveSlot --> Router
-    SendEmail --> Router
+    CheckAvail -->|GET /api/calendar/availability| Router
+    ReserveSlot -->|POST /api/calendar/event| Router
+    SendEmail -->|POST /api/email/send| Router
     
     Router --> Routes
-    CalRoute <--> GCalPlugin
-    EmailRoute <--> GmailPlugin
+    CalRoute <-->|Request execution| GCalPlugin
+    EmailRoute <-->|Request execution| GmailPlugin
     
     GCalPlugin <--> CorsairSDK
     GmailPlugin <--> CorsairSDK
     
-    CorsairSDK <--> PG
+    CorsairSDK <-->|Refresh Tokens automatically| PG
     
-    GCalPlugin <--> GCalAPI
-    GmailPlugin <--> GmailAPI
+    GCalPlugin <-->|Authenticated API Calls| GCalAPI
+    GmailPlugin <-->|Authenticated API Calls| GmailAPI
 ```
 
 ## 🛠️ Key Components

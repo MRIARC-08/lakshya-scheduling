@@ -23,49 +23,49 @@ graph TD
     classDef llm fill:transparent,stroke:#666,stroke-width:1px,stroke-dasharray: 4 4,rx:0,ry:0;
 
     %% Entry points
-    API(["FastAPI REST /chat"]):::endpoint
+    API(["FastAPI REST Endpoint<br/>/chat, /chat/history"]):::endpoint
     
     subgraph LangGraphEngine [LangGraph State Machine Engine]
-        State[("SchedulingState")]:::default
+        State[("SchedulingState TypedDict<br/>Manages Context & Variables")]:::default
         Router{"Triage Router"}:::default
         
         subgraph Agents [AI Agents]
-            TriageNode["Triage Agent"]:::agent
-            BookingNode["Booking Specialist"]:::agent
+            TriageNode["Triage Agent Node<br/>System Prompt: Categorization"]:::agent
+            BookingNode["Booking Specialist Node<br/>System Prompt: Slot Booking"]:::agent
         end
         
         subgraph Tools [External Tools API]
-            CheckAvailability[["Tool: availability"]]:::default
-            ReserveSlot[["Tool: reserve_slot"]]:::default
-            SendEmail[["Tool: send_email"]]:::default
+            CheckAvailability[["Tool: check_availability<br/>Hits Corsair /calendar"]]:::default
+            ReserveSlot[["Tool: reserve_slot<br/>Hits Corsair /calendar/event"]]:::default
+            SendEmail[["Tool: send_email<br/>Hits Corsair /email"]]:::default
         end
     end
     
-    subgraph Persistence [Neon Persistence]
-        PG_Threads[("Checkpoints DB")]:::db
-        PG_Bookings[("Bookings DB")]:::db
+    subgraph Persistence [Neon Database Persistence]
+        PG_Threads[("Checkpoints Table<br/>stores thread history")]:::db
+        PG_Bookings[("Bookings Table<br/>stores confirmed appointments")]:::db
     end
     
     subgraph LLMRouting [LLM Provider Routing]
-        PrimaryLLM["Cerebras gpt-oss-120b"]:::llm
-        FallbackLLM["Groq Llama 3"]:::llm
+        PrimaryLLM["Cerebras gpt-oss-120b<br/>Primary Fast Inference"]:::llm
+        FallbackLLM["Groq Llama 3 / Mixtral<br/>Fallback for Rate Limits"]:::llm
     end
     
-    API --> State
+    API -->|Inject HumanMessage| State
     State --> Router
     
     Router -->|Intent = General| TriageNode
-    Router -->|Intent = Booking| BookingNode
+    Router -->|Intent = Book/Reschedule| BookingNode
     
-    TriageNode <--> PrimaryLLM
-    BookingNode <--> PrimaryLLM
+    TriageNode <-->|Queries for Generation| PrimaryLLM
+    BookingNode <-->|Queries for Tool Call/Generation| PrimaryLLM
     PrimaryLLM -.->|429 Rate Limit| FallbackLLM
     
-    BookingNode <--> Tools
-    Tools -.-> BookingNode
+    BookingNode <-->|Calls if tool_calls outputted| Tools
+    Tools -.->|Returns JSON Status| BookingNode
     
-    Tools --> PG_Bookings
-    LangGraphEngine <--> PG_Threads
+    Tools -->|Updates| PG_Bookings
+    LangGraphEngine <-->|Auto-saves State| PG_Threads
 ```
 
 ## 🛠️ Key Components

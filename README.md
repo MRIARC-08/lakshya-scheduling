@@ -31,50 +31,60 @@ graph TD
 
     %% User and UI Layer
     subgraph Client [Client Side]
-        User(("User")):::client
+        User(("User / Aspirant")):::client
         Browser["Web Browser"]:::client
-        User --> Browser
+        User -->|Interacts with UI| Browser
     end
     
-    subgraph FrontendApp [Frontend App]
-        NextUI["React Components"]:::default
-        ChatHook["useChatSessions"]:::default
-        NextAPI["/api/chat"]:::default
+    subgraph FrontendApp [Frontend Next.js Application]
+        NextUI["React Components<br/>TailwindCSS, GSAP"]:::default
+        ChatHook["useChatSessions Hook"]:::default
+        NextAPI["Next.js API Route<br/>/api/chat"]:::default
+        NextAuth["NextAuth.js<br/>Google OAuth"]:::default
         
-        Browser <--> NextUI
-        NextUI <--> ChatHook
-        ChatHook <--> NextAPI
+        Browser <-->|HTTP Requests| NextUI
+        NextUI <-->|State Mgmt| ChatHook
+        ChatHook <-->|POST JSON| NextAPI
     end
     
     %% API and Agent Layer
-    subgraph AIAgent [Python AI Service]
+    subgraph AIAgent [Python AI Agent Service]
         FastAPI["FastAPI Server"]:::agent
         LangGraph["LangGraph Engine"]:::agent
-        State[("Agent DB")]:::agent
+        State[("Agent Checkpoints<br/>PostgreSQL Neon")]:::agent
         
-        NextAPI <--> FastAPI
-        FastAPI <--> LangGraph
-        LangGraph <--> State
+        Triage["Triage Agent"]:::agent
+        Booking["Booking Specialist"]:::agent
+        
+        NextAPI <-->|REST API| FastAPI
+        FastAPI <-->|State Updates| LangGraph
+        LangGraph <-->|State Persistence| State
+        
+        LangGraph -->|Routes to| Triage
+        LangGraph -->|Routes to| Booking
     end
     
     %% Integration Layer
     subgraph Integration [Corsair Bridge Service]
         Express["Express.js Server"]:::bridge
-        CorsairSDK["Corsair Core"]:::bridge
-        CorsairDB[("OAuth DB")]:::bridge
+        CorsairSDK["Corsair SDK Core"]:::bridge
+        CorsairDB[("OAuth Tokens<br/>PostgreSQL Local")]:::bridge
         
-        LangGraph -->|Tool Calling| Express
-        Express <--> CorsairSDK
-        CorsairSDK <--> CorsairDB
+        Booking -->|Tool: check_availability| Express
+        Booking -->|Tool: reserve_slot| Express
+        Booking -->|Tool: send_email| Express
+        
+        Express <-->|Manage Auth| CorsairSDK
+        CorsairSDK <-->|Read/Write Tokens| CorsairDB
     end
     
     %% External Services
-    subgraph External [Google Workspace]
-        GCal["Google Calendar"]:::external
-        Gmail["Gmail"]:::external
+    subgraph External [Google Workspace APIs]
+        GCal["Google Calendar API"]:::external
+        Gmail["Gmail API"]:::external
         
-        CorsairSDK <--> GCal
-        CorsairSDK <--> Gmail
+        CorsairSDK <-->|Fetch/Create Events| GCal
+        CorsairSDK <-->|Send MIME Emails| Gmail
     end
 ```
 

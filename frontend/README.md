@@ -27,7 +27,7 @@ graph TD
     
     subgraph BrowserEnvironment [Browser Environment]
         subgraph ReactApp [React Application]
-            Hero["Landing Page UI"]:::default
+            Hero["Landing Page Components"]:::default
             ChatUI["Chat Interface UI"]:::default
             Dash["Dashboard UI"]:::default
         end
@@ -35,13 +35,13 @@ graph TD
         subgraph StateManagement [State & Storage]
             SessionAuth["NextAuth Session State"]:::default
             ChatHook["useChatSessions Hook"]:::default
-            LocalStorage[("Browser Local Storage")]:::default
+            LocalStorage[("Browser Local Storage<br/>Thread UUIDs")]:::default
         end
     end
     
     subgraph NextServer [Next.js Server Proxy]
         AuthRoute["Auth Callbacks"]:::proxy
-        APIRoutes["Next.js API /api/chat"]:::proxy
+        APIRoutes["Next.js API Routes<br/>/api/chat"]:::proxy
     end
     
     subgraph ExternalBackend [Python Agent Backend]
@@ -49,19 +49,19 @@ graph TD
         AgentHistory["/history endpoint/"]:::external
     end
     
-    User <--> Hero
-    User <--> ChatUI
-    User <--> Dash
+    User <-->|Interacts| Hero
+    User <-->|Types Messages| ChatUI
+    User <-->|Views Bookings| Dash
     
-    ChatUI <--> ChatHook
-    Dash <--> SessionAuth
+    ChatUI <-->|Reads/Writes Messages| ChatHook
+    Dash <-->|Validates Access| SessionAuth
     
-    ChatHook <--> LocalStorage
-    ChatHook <--> APIRoutes
-    SessionAuth <--> AuthRoute
+    ChatHook <-->|Persists Thread IDs| LocalStorage
+    ChatHook <-->|POST Message / GET History| APIRoutes
+    SessionAuth <-->|OAuth Flow| AuthRoute
     
-    APIRoutes --> AgentChat
-    APIRoutes --> AgentHistory
+    APIRoutes -->|Proxy POST| AgentChat
+    APIRoutes -->|Proxy GET| AgentHistory
 ```
 
 ## 🛠️ Key Components
