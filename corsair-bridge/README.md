@@ -9,9 +9,9 @@ The Python agent lacks direct access to the user's Google Workspace. Instead, it
 ```mermaid
 graph TD
     subgraph Python Agent
-        CheckAvail[check_availability()]
-        ReserveSlot[reserve_slot()]
-        SendEmail[send_email()]
+        CheckAvail["check_availability()"]
+        ReserveSlot["reserve_slot()"]
+        SendEmail["send_email()"]
     end
     
     subgraph Corsair Bridge [Express.js Server]
