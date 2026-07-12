@@ -81,7 +81,7 @@ def send_confirmation_email(
                 "message_id": data.get("messageId"),
                 "to":         customer_email,
                 "message": (
-                    f"✉️ Confirmation email sent to {customer_email}. "
+                    f"Confirmation email sent to {customer_email}. "
                     f"Student will receive session details shortly."
                 ),
             })
