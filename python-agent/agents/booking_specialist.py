@@ -1,4 +1,4 @@
-from langchain_groq import ChatGroq
+from langchain_openai import ChatOpenAI
 from langchain_core.messages import SystemMessage, AIMessage, ToolMessage
 from langchain_core.tools import BaseTool
 from utils.date_utils import get_current_ist_context
@@ -105,7 +105,7 @@ TONE & STYLE:
 
 
 def create_booking_specialist(
-    llm_with_tools: ChatGroq,
+    llm_with_tools: ChatOpenAI,
     tools: List[BaseTool]
 ):
     tool_map = {t.name: t for t in tools}

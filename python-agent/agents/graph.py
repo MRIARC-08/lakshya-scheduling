@@ -4,7 +4,8 @@ from langgraph.graph.message import add_messages
 from langgraph.checkpoint.postgres import PostgresSaver
 from langchain_core.messages import BaseMessage, AIMessage
 from langchain_core.runnables import RunnableLambda
-from langchain_groq import ChatGroq
+# from langchain_groq import ChatGroq
+from langchain_openai import ChatOpenAI
 import psycopg
 from psycopg_pool import ConnectionPool
 
@@ -54,34 +55,66 @@ def triage_router(
 _graph = None
 
 def build_graph():
-    llm = ChatGroq(
-        model_name=config.LLM_MODEL,
+    # llm = ChatGroq(
+    #     model_name=config.LLM_MODEL,
+    #     temperature=config.LLM_TEMPERATURE,
+    #     groq_api_key=config.GROQ_API_KEY_SECONDARY or config.GROQ_API_KEY,
+    #     max_retries=3,
+    # )
+    
+    # # Secondary LLM instance specifically for Triage to divide load
+    # triage_llm = ChatGroq(
+    #     model_name="llama-3.1-8b-instant",
+    #     temperature=config.LLM_TEMPERATURE,
+    #     groq_api_key=config.GROQ_API_KEY,
+    #     max_retries=3,
+    # )
+    
+    # # Fallback LLM in case the primary hits rate limits
+    # fallback_llm = ChatGroq(
+    #     model_name="llama-3.1-8b-instant", 
+    #     temperature=config.LLM_TEMPERATURE,
+    #     groq_api_key=config.GROQ_API_KEY,
+    #     max_retries=3,
+    # )
+    
+    # # Secondary Fallback LLM (Mixtral) in case Llama 3 models are completely exhausted
+    # secondary_fallback_llm = ChatGroq(
+    #     model_name="mixtral-8x7b-32768", 
+    #     temperature=config.LLM_TEMPERATURE,
+    #     groq_api_key=config.GROQ_API_KEY,
+    #     max_retries=3,
+    # )
+
+    llm = ChatOpenAI(
+        model=config.LLM_MODEL,
         temperature=config.LLM_TEMPERATURE,
-        groq_api_key=config.GROQ_API_KEY_SECONDARY or config.GROQ_API_KEY,
+        openai_api_key=config.CEREBRAS_API_KEY_1,
+        openai_api_base=config.OPENAI_BASE_URL,
         max_retries=3,
     )
     
-    # Secondary LLM instance specifically for Triage to divide load
-    triage_llm = ChatGroq(
-        model_name="llama-3.1-8b-instant",
+    triage_llm = ChatOpenAI(
+        model=config.LLM_MODEL,
         temperature=config.LLM_TEMPERATURE,
-        groq_api_key=config.GROQ_API_KEY,
+        openai_api_key=config.CEREBRAS_API_KEY_2,
+        openai_api_base=config.OPENAI_BASE_URL,
         max_retries=3,
     )
     
-    # Fallback LLM in case the primary hits rate limits
-    fallback_llm = ChatGroq(
-        model_name="llama-3.1-8b-instant", 
+    fallback_llm = ChatOpenAI(
+        model=config.LLM_MODEL,
         temperature=config.LLM_TEMPERATURE,
-        groq_api_key=config.GROQ_API_KEY,
+        openai_api_key=config.CEREBRAS_API_KEY_1,
+        openai_api_base=config.OPENAI_BASE_URL,
         max_retries=3,
     )
     
-    # Secondary Fallback LLM (Mixtral) in case Llama 3 models are completely exhausted
-    secondary_fallback_llm = ChatGroq(
-        model_name="mixtral-8x7b-32768", 
+    secondary_fallback_llm = ChatOpenAI(
+        model=config.LLM_MODEL,
         temperature=config.LLM_TEMPERATURE,
-        groq_api_key=config.GROQ_API_KEY,
+        openai_api_key=config.CEREBRAS_API_KEY_2,
+        openai_api_base=config.OPENAI_BASE_URL,
         max_retries=3,
     )
 

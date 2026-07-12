@@ -6,10 +6,13 @@ load_dotenv()
 
 class Config:
     # LLM Settings
-    GROQ_API_KEY: str = os.getenv("GROQ_API_KEY", "")
-    GROQ_API_KEY_SECONDARY: str = os.getenv("GROQ_API_KEY_SECONDARY", os.getenv("GROQ_API_KEY", ""))
-    OPENAI_BASE_URL: Optional[str] = os.getenv("OPENAI_BASE_URL", None)
-    LLM_MODEL: str = os.getenv("LLM_MODEL", "llama-3.3-70b-versatile")
+    # GROQ_API_KEY: str = os.getenv("GROQ_API_KEY", "")
+    # GROQ_API_KEY_SECONDARY: str = os.getenv("GROQ_API_KEY_SECONDARY", os.getenv("GROQ_API_KEY", ""))
+    
+    CEREBRAS_API_KEY_1: str = os.getenv("CEREBRAS_API_KEY_1", "csk-j95v52mcpce9w484md2eynjtn6x4wrt64k8rct388323nwvp")
+    CEREBRAS_API_KEY_2: str = os.getenv("CEREBRAS_API_KEY_2", "csk-h4mkw28y25p4wf8ykw5jk4ykr8t2heyd4xvp825rv492f2vt")
+    OPENAI_BASE_URL: Optional[str] = os.getenv("OPENAI_BASE_URL", "https://api.cerebras.ai/v1")
+    LLM_MODEL: str = os.getenv("LLM_MODEL", "gpt-oss-120b")
     LLM_TEMPERATURE: float = 0.01
 
     # Corsair Bridge
