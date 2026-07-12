@@ -57,15 +57,15 @@ def build_graph():
     llm = ChatGroq(
         model_name=config.LLM_MODEL,
         temperature=config.LLM_TEMPERATURE,
-        groq_api_key=config.GROQ_API_KEY,
+        groq_api_key=config.GROQ_API_KEY_SECONDARY or config.GROQ_API_KEY,
         max_retries=3,
     )
     
     # Secondary LLM instance specifically for Triage to divide load
     triage_llm = ChatGroq(
-        model_name=config.LLM_MODEL,
+        model_name="llama-3.1-8b-instant",
         temperature=config.LLM_TEMPERATURE,
-        groq_api_key=config.GROQ_API_KEY_SECONDARY,
+        groq_api_key=config.GROQ_API_KEY,
         max_retries=3,
     )
     
