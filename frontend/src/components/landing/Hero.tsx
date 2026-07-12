@@ -51,6 +51,17 @@ export default function Hero() {
       ease:     'sine.inOut',
     })
 
+    // Animate the background paths
+    gsap.fromTo('.path-flow',
+      { strokeDashoffset: 100 },
+      {
+        strokeDashoffset: 0,
+        duration: 8,
+        repeat: -1,
+        ease: 'none',
+      }
+    )
+
   }, { scope: containerRef })
 
   return (
@@ -60,11 +71,13 @@ export default function Hero() {
                  items-center justify-center text-center px-4
                  relative overflow-hidden"
     >
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-0 -left-1/4 w-[150%] h-[150%] animate-float mix-blend-screen opacity-40">
-          <div className="absolute top-20 left-1/3 w-96 h-96 rounded-full bg-black/5 blur-[128px]" />
-          <div className="absolute bottom-20 right-1/3 w-[500px] h-[500px] rounded-full bg-black/10 blur-[128px]" />
-        </div>
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <svg className="absolute inset-0 h-full w-full opacity-[0.15]" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+          <path className="path-flow" d="M-50 420 C 200 280, 400 520, 650 380 S 1100 300, 1250 450" fill="none" stroke="#1c1c1c" strokeWidth="2" strokeDasharray="6 8" />
+          <path className="path-flow" d="M-80 520 C 250 400, 500 600, 750 480 S 1150 380, 1280 560" fill="none" stroke="#1c1c1c" strokeWidth="1.5" strokeDasharray="4 10" opacity="0.6"/>
+          <path className="path-flow" d="M100 650 C 350 500, 550 700, 800 580 S 1050 450, 1200 620" fill="none" stroke="#1c1c1c" strokeWidth="1" strokeDasharray="3 12" opacity="0.4"/>
+        </svg>
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#f4f4f4]" />
       </div>
 
       <div className="relative z-10 max-w-4xl mx-auto">

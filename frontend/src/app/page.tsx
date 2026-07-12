@@ -31,10 +31,9 @@ export default function LandingPage() {
                          hover:scale-[1.02] active:scale-[0.98]"
             >
               Chat with Arjun
-              <span>🎯</span>
             </Link>
             <p className="text-xs text-[#1c1c1c]/40 mt-6 font-medium tracking-wide uppercase">
-              Jai Hind 🇮🇳
+              Jai Hind
             </p>
           </div>
         </section>

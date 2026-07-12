@@ -36,7 +36,7 @@ function LoginForm() {
           {/* Header */}
           <div className="bg-gradient-to-r from-saffron-500
                           to-orange-600 px-8 py-8 text-center">
-            <div className="text-5xl mb-3">🎯</div>
+            <div className="text-5xl mb-3 hidden"></div>
             <h1 className="text-white font-bold text-xl">
               Lakshya IAS Academy
             </h1>
