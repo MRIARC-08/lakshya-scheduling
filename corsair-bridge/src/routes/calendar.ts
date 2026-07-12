@@ -212,19 +212,39 @@ This session was booked via the Lakshya scheduling assistant (Arjun).
       } as any,
     })
 
+    let finalEvent = createdEvent
+    let hangoutLink = finalEvent.hangoutLink
+
+    // If conference creation is pending/async, poll for it up to 3 times
+    if (!hangoutLink && finalEvent.conferenceData?.createRequest?.status?.statusCode === 'pending') {
+      for (let i = 0; i < 3; i++) {
+        await new Promise(resolve => setTimeout(resolve, 1500))
+        const fetched = await corsair.googlecalendar.api.events.get({
+          calendarId,
+          eventId: finalEvent.id!,
+        })
+        if (fetched.hangoutLink) {
+          finalEvent = fetched
+          hangoutLink = fetched.hangoutLink
+          break
+        }
+      }
+    }
+
     log('INFO', 'Event created successfully', {
-      eventId: createdEvent.id,
-      link: createdEvent.htmlLink,
+      eventId: finalEvent.id,
+      link: finalEvent.htmlLink,
+      meetLink: hangoutLink,
     })
 
     return res.json({
       success: true,
-      eventId: createdEvent.id,
-      summary: createdEvent.summary,
+      eventId: finalEvent.id,
+      summary: finalEvent.summary,
       startDateTime,
       endDateTime,
       sessionType,
-      meetLink: createdEvent.hangoutLink,
+      meetLink: hangoutLink,
       message: `Session booked successfully on Google Calendar`,
     })
   } catch (error) {
