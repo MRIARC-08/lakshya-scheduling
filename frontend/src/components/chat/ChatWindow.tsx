@@ -17,7 +17,7 @@ interface ChatWindowProps {
 const WELCOME_MESSAGE: Message = {
   id:        'welcome',
   role:      'assistant',
-  content:   'Namaste! 🙏 I\'m Arjun from Lakshya IAS Academy.\n\nWhether you\'re just starting your UPSC journey or preparing for your final attempt, I\'m here to help you book a session with our expert mentors.\n\nHow can I assist you today?',
+  content:   'Namaste! I\'m Arjun from Lakshya IAS Academy.\n\nWhether you\'re just starting your UPSC journey or preparing for your final attempt, I\'m here to help you book a session with our expert mentors.\n\nHow can I assist you today?',
   timestamp: new Date(),
 }
 

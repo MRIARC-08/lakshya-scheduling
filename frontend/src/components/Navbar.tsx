@@ -7,10 +7,13 @@ import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import { useRef, useState, useEffect } from 'react'
 import clsx from 'clsx'
+import { usePathname } from 'next/navigation'
 
 export default function Navbar() {
   const { data: session } = useSession()
   const navRef = useRef<HTMLElement>(null)
+  const pathname = usePathname()
+  const isChatPage = pathname === '/chat'
   const [isScrolled, setIsScrolled] = useState(false)
 
   useEffect(() => {
@@ -30,18 +33,26 @@ export default function Navbar() {
   return (
     <nav
       ref={navRef}
-      className="fixed top-0 left-0 right-0 z-50 p-4 transition-all duration-300 pointer-events-none"
+      className={clsx(
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 pointer-events-none",
+        isChatPage ? "p-0" : "p-4"
+      )}
     >
       <div className={clsx(
-        "mx-auto h-16 bg-white/80 backdrop-blur-md border border-[#ebebeb] flex items-center justify-between px-6 relative pointer-events-auto transition-all duration-500",
-        isScrolled ? "max-w-4xl rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] mt-2" : "max-w-6xl rounded-none shadow-sm mt-0"
+        "mx-auto h-16 flex items-center justify-between px-6 relative pointer-events-auto transition-all duration-500",
+        isChatPage ? "w-full max-w-none bg-white border-b border-[#ebebeb] shadow-none" :
+        isScrolled ? "max-w-4xl bg-white/80 backdrop-blur-md border border-[#ebebeb] rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] mt-2" : "max-w-6xl bg-white/80 backdrop-blur-md border border-[#ebebeb] rounded-none shadow-sm mt-0"
       )}>
         
-        {/* Corner crosses */}
-        <span className={clsx("absolute -top-[12px] -left-[5px] text-[#a3a3a3] leading-none text-xl font-light pointer-events-none transition-opacity duration-300", isScrolled ? "opacity-0" : "opacity-100")}>+</span>
-        <span className={clsx("absolute -top-[12px] -right-[5px] text-[#a3a3a3] leading-none text-xl font-light pointer-events-none transition-opacity duration-300", isScrolled ? "opacity-0" : "opacity-100")}>+</span>
-        <span className={clsx("absolute -bottom-[12px] -left-[5px] text-[#a3a3a3] leading-none text-xl font-light pointer-events-none transition-opacity duration-300", isScrolled ? "opacity-0" : "opacity-100")}>+</span>
-        <span className={clsx("absolute -bottom-[12px] -right-[5px] text-[#a3a3a3] leading-none text-xl font-light pointer-events-none transition-opacity duration-300", isScrolled ? "opacity-0" : "opacity-100")}>+</span>
+        {/* Corner crosses - Hide on chat page */}
+        {!isChatPage && (
+          <>
+            <span className={clsx("absolute -top-[12px] -left-[5px] text-[#a3a3a3] leading-none text-xl font-light pointer-events-none transition-opacity duration-300", isScrolled ? "opacity-0" : "opacity-100")}>+</span>
+            <span className={clsx("absolute -top-[12px] -right-[5px] text-[#a3a3a3] leading-none text-xl font-light pointer-events-none transition-opacity duration-300", isScrolled ? "opacity-0" : "opacity-100")}>+</span>
+            <span className={clsx("absolute -bottom-[12px] -left-[5px] text-[#a3a3a3] leading-none text-xl font-light pointer-events-none transition-opacity duration-300", isScrolled ? "opacity-0" : "opacity-100")}>+</span>
+            <span className={clsx("absolute -bottom-[12px] -right-[5px] text-[#a3a3a3] leading-none text-xl font-light pointer-events-none transition-opacity duration-300", isScrolled ? "opacity-0" : "opacity-100")}>+</span>
+          </>
+        )}
 
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3 group">
