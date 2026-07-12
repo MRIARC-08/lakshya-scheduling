@@ -134,14 +134,14 @@ export default function Hero() {
             <span className="relative">Book Free Session</span>
             <svg className="w-5 h-5 relative transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
           </Link>
-          <Link
+          <a
             href="#sessions"
             className="inline-flex items-center gap-2 bg-white border border-[#ebebeb] text-[#1c1c1c]
                        font-medium px-8 py-4 rounded-full text-lg shadow-sm
                        transition-all duration-300 hover:bg-[#fafafa]"
           >
             View Session Types
-          </Link>
+          </a>
         </div>
 
         {/* Trust indicators */}
