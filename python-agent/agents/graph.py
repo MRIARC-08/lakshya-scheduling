@@ -58,7 +58,7 @@ def build_graph():
         model_name=config.LLM_MODEL,
         temperature=config.LLM_TEMPERATURE,
         groq_api_key=config.GROQ_API_KEY,
-        max_retries=0,
+        max_retries=3,
     )
     
     # Secondary LLM instance specifically for Triage to divide load
@@ -66,7 +66,7 @@ def build_graph():
         model_name=config.LLM_MODEL,
         temperature=config.LLM_TEMPERATURE,
         groq_api_key=config.GROQ_API_KEY_SECONDARY,
-        max_retries=0,
+        max_retries=3,
     )
     
     # Fallback LLM in case the primary hits rate limits
@@ -74,7 +74,7 @@ def build_graph():
         model_name="llama-3.1-8b-instant", 
         temperature=config.LLM_TEMPERATURE,
         groq_api_key=config.GROQ_API_KEY,
-        max_retries=0,
+        max_retries=3,
     )
     
     # Secondary Fallback LLM (Mixtral) in case Llama 3 models are completely exhausted
@@ -82,7 +82,7 @@ def build_graph():
         model_name="mixtral-8x7b-32768", 
         temperature=config.LLM_TEMPERATURE,
         groq_api_key=config.GROQ_API_KEY,
-        max_retries=0,
+        max_retries=3,
     )
 
     tools          = [check_availability, reserve_slot, send_confirmation_email]
