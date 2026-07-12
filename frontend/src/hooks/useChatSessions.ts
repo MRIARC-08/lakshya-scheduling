@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
 export interface ChatSession {
@@ -39,7 +39,7 @@ export function useChatSessions() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(sessions))
   }, [sessions, isLoaded])
 
-  const createNewSession = () => {
+  const createNewSession = useCallback(() => {
     const newSession: ChatSession = {
       id: uuidv4(),
       title: 'New Chat',
@@ -48,7 +48,7 @@ export function useChatSessions() {
     setSessions(prev => [newSession, ...prev])
     setActiveSessionId(newSession.id)
     return newSession.id
-  }
+  }, [])
 
   const updateSessionTitle = (id: string, newTitle: string) => {
     setSessions(prev => 

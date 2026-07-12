@@ -23,7 +23,7 @@ export default function LandingPage() {
               No commitment required.
             </p>
             <Link
-              href="/chat"
+              href="/chat?new=true"
               className="inline-flex items-center gap-2 bg-[#1c1c1c]
                          hover:bg-[#2a2a2a] text-white font-semibold
                          px-10 py-4 rounded-full text-lg transition-all

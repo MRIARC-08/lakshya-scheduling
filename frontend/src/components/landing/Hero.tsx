@@ -124,7 +124,7 @@ export default function Hero() {
         {/* CTAs */}
         <div ref={ctaRef} className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <Link
-            href="/chat"
+            href="/chat?new=true"
             className="group relative inline-flex items-center gap-2 bg-[#1c1c1c]
                        text-white font-semibold px-8 py-4 rounded-full text-lg
                        shadow-[0_4px_16px_rgba(0,0,0,0.15)] transition-all duration-300

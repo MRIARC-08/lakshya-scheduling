@@ -21,13 +21,19 @@ export default function ChatPage() {
   const { data: nextSession } = useSession()
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
-  // Initialize a default threadId if no sessions exist
+  // Initialize a default threadId if no sessions exist, or handle new chat requests
   useEffect(() => {
-    if (isLoaded && sessions.length === 0) {
-      // Fallback behavior: use user id or guest id if no chats
-      getOrCreateGuestId()
-      // Generate a new session automatically
-      createNewSession()
+    if (isLoaded) {
+      if (typeof window !== 'undefined' && window.location.search.includes('new=true')) {
+        // User clicked a CTA asking for a new chat
+        createNewSession()
+        window.history.replaceState({}, '', '/chat')
+      } else if (sessions.length === 0) {
+        // Fallback behavior: use user id or guest id if no chats
+        getOrCreateGuestId()
+        // Generate a new session automatically
+        createNewSession()
+      }
     }
   }, [isLoaded, sessions.length, createNewSession, nextSession])
 

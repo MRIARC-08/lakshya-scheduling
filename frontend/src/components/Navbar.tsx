@@ -46,7 +46,7 @@ export default function Navbar() {
         {/* Nav links */}
         <div className="hidden md:flex items-center gap-8">
           <Link
-            href="/chat"
+            href="/chat?new=true"
             className="text-sm text-gray-600 hover:text-gray-900
                        transition-colors font-medium relative group"
           >

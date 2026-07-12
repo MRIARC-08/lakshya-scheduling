@@ -151,7 +151,7 @@ export default function SessionTypes() {
 
               {/* CTA */}
               <Link
-                href="/chat"
+                href="/chat?new=true"
                 className="inline-flex items-center gap-2 text-[#1c1c1c]
                            hover:text-[#555] text-sm font-bold uppercase tracking-wide
                            transition-colors group-hover:gap-3"
