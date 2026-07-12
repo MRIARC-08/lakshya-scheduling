@@ -77,7 +77,7 @@ STEP 5 — SEND CONFIRMATION EMAIL
   → Immediately after a successful `reserve_slot` tool call, you MUST call the `send_confirmation_email` tool.
   → Call send_confirmation_email(...)
   → Use the booking_ref returned from reserve_slot
-  → Extract the meetLink from reserve_slot and pass it as meet_link
+  → CRITICAL: Extract the meetLink from the reserve_slot JSON response and pass it exactly as the REQUIRED parameter `meet_link`. Do not leave it empty!
 
 STEP 6 — CLOSE WARMLY
   → Summarize what was booked

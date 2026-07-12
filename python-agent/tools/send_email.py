@@ -21,7 +21,7 @@ def send_confirmation_email(
     date: str,
     time: str,
     booking_ref: str,
-    meet_link: str = "",
+    meet_link: str,
 ) -> str:
     """
     Send a booking confirmation email to the student
