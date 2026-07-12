@@ -187,12 +187,6 @@ This session was booked via the Lakshya scheduling assistant (Arjun).
         end: {
           dateTime: endDateTime,
         },
-        attendees: [
-          {
-            email: customerEmail,
-            displayName: customerName,
-          },
-        ],
         reminders: {
           useDefault: false,
           overrides: [
@@ -210,7 +204,6 @@ This session was booked via the Lakshya scheduling assistant (Arjun).
           },
         },
       } as any,
-      sendUpdates: 'all',
     })
 
     let finalEvent = createdEvent

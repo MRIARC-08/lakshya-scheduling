@@ -107,6 +107,10 @@ def chat(req: ChatRequest):
             if not getattr(msg, "tool_calls", None):
                 last_response = msg.content
                 break
+                
+    # Clean up any potential <thinking> tags or hallucinated JSON blocks
+    last_response = re.sub(r'<thinking>.*?</thinking>', '', last_response, flags=re.DOTALL)
+    last_response = re.sub(r'\{.*?\}', '', last_response, flags=re.DOTALL).strip()
 
     return ChatResponse(
         response=     last_response or "Bilkul! How can I help you?",
@@ -152,7 +156,8 @@ def get_chat_history(thread_id: str):
             
         content = msg.content
         if role == "assistant":
-            content = re.sub(r'<thinking>.*?</thinking>', '', content, flags=re.DOTALL).strip()
+            content = re.sub(r'<thinking>.*?</thinking>', '', content, flags=re.DOTALL)
+            content = re.sub(r'\{.*?\}', '', content, flags=re.DOTALL).strip()
             if not content:
                 continue
                 
