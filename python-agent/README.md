@@ -23,32 +23,32 @@ graph TD
     classDef llm fill:transparent,stroke:#666,stroke-width:1px,stroke-dasharray: 4 4,rx:0,ry:0;
 
     %% Entry points
-    API([FastAPI REST /chat]):::endpoint
+    API(["FastAPI REST /chat"]):::endpoint
     
     subgraph LangGraphEngine [LangGraph State Machine Engine]
-        State[(SchedulingState)]:::default
-        Router{Triage Router}:::default
+        State[("SchedulingState")]:::default
+        Router{"Triage Router"}:::default
         
         subgraph Agents [AI Agents]
-            TriageNode[Triage Agent]:::agent
-            BookingNode[Booking Specialist]:::agent
+            TriageNode["Triage Agent"]:::agent
+            BookingNode["Booking Specialist"]:::agent
         end
         
         subgraph Tools [External Tools API]
-            CheckAvailability[[Tool: availability]]:::default
-            ReserveSlot[[Tool: reserve_slot]]:::default
-            SendEmail[[Tool: send_email]]:::default
+            CheckAvailability[["Tool: availability"]]:::default
+            ReserveSlot[["Tool: reserve_slot"]]:::default
+            SendEmail[["Tool: send_email"]]:::default
         end
     end
     
     subgraph Persistence [Neon Persistence]
-        PG_Threads[(Checkpoints DB)]:::db
-        PG_Bookings[(Bookings DB)]:::db
+        PG_Threads[("Checkpoints DB")]:::db
+        PG_Bookings[("Bookings DB")]:::db
     end
     
     subgraph LLMRouting [LLM Provider Routing]
-        PrimaryLLM[Cerebras gpt-oss-120b]:::llm
-        FallbackLLM[Groq Llama 3]:::llm
+        PrimaryLLM["Cerebras gpt-oss-120b"]:::llm
+        FallbackLLM["Groq Llama 3"]:::llm
     end
     
     API --> State

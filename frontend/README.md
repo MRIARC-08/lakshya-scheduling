@@ -23,30 +23,30 @@ graph TD
     classDef external fill:transparent,stroke:#666,stroke-width:1px,stroke-dasharray: 4 4,rx:0,ry:0;
 
     %% User and UI Layer
-    User([User]):::client
+    User(["User"]):::client
     
     subgraph BrowserEnvironment [Browser Environment]
         subgraph ReactApp [React Application]
-            Hero[Landing Page UI]:::default
-            ChatUI[Chat Interface UI]:::default
-            Dash[Dashboard UI]:::default
+            Hero["Landing Page UI"]:::default
+            ChatUI["Chat Interface UI"]:::default
+            Dash["Dashboard UI"]:::default
         end
         
         subgraph StateManagement [State & Storage]
-            SessionAuth[NextAuth Session State]:::default
-            ChatHook[useChatSessions Hook]:::default
-            LocalStorage[(Browser Local Storage)]:::default
+            SessionAuth["NextAuth Session State"]:::default
+            ChatHook["useChatSessions Hook"]:::default
+            LocalStorage[("Browser Local Storage")]:::default
         end
     end
     
     subgraph NextServer [Next.js Server Proxy]
-        AuthRoute[Auth Callbacks]:::proxy
-        APIRoutes[Next.js API /api/chat]:::proxy
+        AuthRoute["Auth Callbacks"]:::proxy
+        APIRoutes["Next.js API /api/chat"]:::proxy
     end
     
     subgraph ExternalBackend [Python Agent Backend]
-        AgentChat[/chat endpoint/]:::external
-        AgentHistory[/history endpoint/]:::external
+        AgentChat["/chat endpoint/"]:::external
+        AgentHistory["/history endpoint/"]:::external
     end
     
     User <--> Hero

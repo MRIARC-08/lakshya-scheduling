@@ -31,15 +31,15 @@ graph TD
 
     %% User and UI Layer
     subgraph Client [Client Side]
-        User((User)):::client
-        Browser[Web Browser]:::client
+        User(("User")):::client
+        Browser["Web Browser"]:::client
         User --> Browser
     end
     
     subgraph FrontendApp [Frontend App]
-        NextUI[React Components]:::default
-        ChatHook[useChatSessions]:::default
-        NextAPI[/api/chat]:::default
+        NextUI["React Components"]:::default
+        ChatHook["useChatSessions"]:::default
+        NextAPI["/api/chat"]:::default
         
         Browser <--> NextUI
         NextUI <--> ChatHook
@@ -48,9 +48,9 @@ graph TD
     
     %% API and Agent Layer
     subgraph AIAgent [Python AI Service]
-        FastAPI[FastAPI Server]:::agent
-        LangGraph[LangGraph Engine]:::agent
-        State[(Agent DB)]:::agent
+        FastAPI["FastAPI Server"]:::agent
+        LangGraph["LangGraph Engine"]:::agent
+        State[("Agent DB")]:::agent
         
         NextAPI <--> FastAPI
         FastAPI <--> LangGraph
@@ -59,9 +59,9 @@ graph TD
     
     %% Integration Layer
     subgraph Integration [Corsair Bridge Service]
-        Express[Express.js Server]:::bridge
-        CorsairSDK[Corsair Core]:::bridge
-        CorsairDB[(OAuth DB)]:::bridge
+        Express["Express.js Server"]:::bridge
+        CorsairSDK["Corsair Core"]:::bridge
+        CorsairDB[("OAuth DB")]:::bridge
         
         LangGraph -->|Tool Calling| Express
         Express <--> CorsairSDK
@@ -70,8 +70,8 @@ graph TD
     
     %% External Services
     subgraph External [Google Workspace]
-        GCal[Google Calendar]:::external
-        Gmail[Gmail]:::external
+        GCal["Google Calendar"]:::external
+        Gmail["Gmail"]:::external
         
         CorsairSDK <--> GCal
         CorsairSDK <--> Gmail

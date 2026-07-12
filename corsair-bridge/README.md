@@ -30,28 +30,28 @@ graph TD
     end
     
     %% Express Server & Corsair SDK
-    subgraph CorsairBridge [Corsair Bridge Service (Express.js)]
-        Router[API Router]:::bridge
+    subgraph CorsairBridge [Corsair Bridge Service]
+        Router["API Router"]:::bridge
         
         subgraph Routes [Express Routes]
-            CalRoute[Calendar Routes]:::default
-            EmailRoute[Email Routes]:::default
+            CalRoute["Calendar Routes"]:::default
+            EmailRoute["Email Routes"]:::default
         end
         
         subgraph Core [Corsair Core Integration]
-            CorsairSDK[Corsair SDK Context]:::bridge
-            GCalPlugin[@googlecalendar]:::default
-            GmailPlugin[@gmail]:::default
+            CorsairSDK["Corsair SDK Context"]:::bridge
+            GCalPlugin["@googlecalendar"]:::default
+            GmailPlugin["@gmail"]:::default
         end
         
         %% DB
-        PG[(OAuth Tokens DB)]:::db
+        PG[("OAuth Tokens DB")]:::db
     end
     
     %% Google Cloud APIs
     subgraph GoogleWorkspace [Google Workspace Cloud]
-        GCalAPI[Google Calendar API]:::api
-        GmailAPI[Gmail API]:::api
+        GCalAPI["Google Calendar API"]:::api
+        GmailAPI["Gmail API"]:::api
     end
     
     %% Network Flow
