@@ -67,7 +67,7 @@ export default function Hero() {
   return (
     <div
       ref={containerRef}
-      className="min-h-screen bg-[#f4f4f4] flex flex-col
+      className="min-h-screen bg-transparent flex flex-col
                  items-center justify-center text-center px-4
                  relative overflow-hidden"
     >
@@ -77,7 +77,6 @@ export default function Hero() {
           <path className="path-flow" d="M-80 520 C 250 400, 500 600, 750 480 S 1150 380, 1280 560" fill="none" stroke="#1c1c1c" strokeWidth="1.5" strokeDasharray="4 10" opacity="0.6"/>
           <path className="path-flow" d="M100 650 C 350 500, 550 700, 800 580 S 1050 450, 1200 620" fill="none" stroke="#1c1c1c" strokeWidth="1" strokeDasharray="3 12" opacity="0.4"/>
         </svg>
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#f4f4f4]" />
       </div>
 
       <div className="relative z-10 max-w-4xl mx-auto">

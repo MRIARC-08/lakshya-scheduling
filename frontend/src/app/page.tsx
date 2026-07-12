@@ -12,7 +12,7 @@ export default function LandingPage() {
         <SessionTypes />
 
         {/* Final CTA section */}
-        <section className="py-24 bg-[#f4f4f4] border-t border-[#ebebeb]
+        <section className="py-24 bg-transparent border-t border-[#ebebeb]
                             text-center px-4">
           <div className="max-w-2xl mx-auto">
             <h2 className="text-3xl font-bold text-[#1c1c1c] tracking-tight mb-4">

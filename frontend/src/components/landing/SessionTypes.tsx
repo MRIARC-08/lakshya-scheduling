@@ -87,7 +87,7 @@ export default function SessionTypes() {
     <section
       id="sessions"
       ref={sectionRef}
-      className="py-24 bg-white border-t border-[#ebebeb] px-4"
+      className="py-24 bg-transparent border-t border-[#ebebeb] px-4"
     >
       <div className="max-w-6xl mx-auto">
 
